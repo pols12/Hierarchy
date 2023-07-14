@@ -9,36 +9,36 @@ use Laminas\Form\Form;
 class HierarchyHelper extends AbstractHelper
 {
     /**
-     * Return the HTML necessary to render all hierarchy forms.
+     * Return the HTML necessary to render all hierarchy form elements.
      *
      */
-    public function hierarchyForms()
+    public function hierarchyFormElements()
     {
         $hierarchies = $this->getView()->api()->search('item_hierarchy')->getContent();
         
         $html = '<div id="hierarchies">';
         foreach ($hierarchies as $hierarchy) {
-            $html .= $this->hierarchyForm($hierarchy);
+            $html .= $this->hierarchyFormElement($hierarchy);
         }
         $html .= '</div>';
         return $html;
     }
 
-    public function hierarchyForm($hierarchy = null) {
+    public function hierarchyFormElement($form, $hierarchy = null) {
         $view = $this->getView();
         return $view->partial('item-hierarchy/common/hierarchy', [
             'label' => $hierarchy ? $hierarchy->getLabel() : null,
-            'hierarchyContent' => $this->form($hierarchy)
+            'hierarchyContent' => $this->formElement($form, $hierarchy)
         ]);
     }
 
-    public function form($hierarchy = null) {
+    public function formElement($form, $hierarchy = null) {
         $defaults = [
             'label' => '',
         ];
         $data = $hierarchy ? $hierarchy->getData() + $defaults : $defaults;
         
-        $form = new Form();
+        // $form = new Form();
         $form->add([
             'name' => 'label',
             'type' => Element\Text::class,

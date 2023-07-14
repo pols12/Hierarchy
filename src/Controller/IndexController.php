@@ -20,7 +20,7 @@ class IndexController extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $formData = $this->params()->fromPost();
             if (isset($formData['layout']) && $formData['layout'] == 'hierarchy') {
-                $content = $this->viewHelpers()->get('hierarchyHelper')->hierarchyForm();
+                $content = $this->viewHelpers()->get('hierarchyHelper')->hierarchyFormElement($form);
                 $response = $this->getResponse();
                 $response->setContent($content);
                 return $response;
@@ -30,6 +30,7 @@ class IndexController extends AbstractActionController
                 $jstreeData = [];
                 $form->setData($formData);
                 if ($form->isValid()) {
+                    unset($formData['form_csrf']);
                     $response = $this->api($form)->update('item_hierarchy', $formData, []);
                     if ($response) {
                         $this->messenger()->addSuccess('Item Hierarchy successfully updated'); // @translate
