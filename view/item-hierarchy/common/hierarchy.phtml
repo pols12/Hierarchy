@@ -1,0 +1,20 @@
+<?php
+$translate = $this->plugin('translate');
+$escape = $this->plugin('escapeHtml');
+?>
+
+<div class="block value">
+    <div class="block-header collapse">
+        <span class="sortable-handle"></span>
+        <span class="block-type"><?php echo $escape($label); ?></span>
+        <span class="restore-value"><?php echo $translate('Hierarchy to be removed'); ?></span>
+        <ul class="actions">
+            <li><a href="#" class="o-icon-expand collapse" aria-label="<?php echo $translate('Collapse'); ?>" title="<?php echo $translate('Collapse'); ?>"></a></li>
+            <li><a href="#" class="o-icon-delete remove-value" aria-label="<?php echo $translate('Remove hierarchy'); ?>" title="<?php echo $translate('Remove hierarchy'); ?>"></a></li>
+            <li><a href="#" class="o-icon-undo restore-value inactive" aria-label="<?php echo $translate('Restore hierarchy'); ?>" title="<?php echo $translate('Restore hierarchy'); ?>"></a></li>
+        </ul>
+    </div>
+    <div class="block-content collapsible">
+        <?php echo $hierarchyContent; ?>
+    </div>
+</div>
