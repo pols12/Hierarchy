@@ -2,15 +2,31 @@
 namespace ItemHierarchy\Api\Representation;
 
 use Omeka\Api\Representation\AbstractEntityRepresentation;
+use ItemHierarchy\Entity\ItemHierarchy;
 
 class ItemHierarchyRepresentation extends AbstractEntityRepresentation
 {
+    /**
+     * @var ItemHierarchy
+     */
+    protected $hierarchy;
+
+    /**
+     * Construct the hierarchy object.
+     *
+     * @param ItemHierarchy $hierarchy
+     */
+    public function __construct(ItemHierarchy $hierarchy)
+    {
+        $this->hierarchy = $hierarchy;
+    }
+
     public function getJsonLd()
     {
         return [
-            'label' => $this->resource->getLabel(),
-            'data' => $this->resource->getData(),
-            'position' => $this->resource->getPosition(),
+            'label' => $this->getLabel(),
+            'data' => $this->getData(),
+            'position' => $this->getPosition(),
         ];
     }
 
@@ -21,16 +37,16 @@ class ItemHierarchyRepresentation extends AbstractEntityRepresentation
 
     public function getLabel()
     {
-        return $this->resource->getLabel();
+        return $this->hierarchy->getLabel();
     }
 
     public function getData()
     {
-        return $this->resource->getData();
+        return $this->hierarchy->getData();
     }
 
     public function getPosition()
     {
-        return $this->resource->getPosition();
+        return $this->hierarchy->getPosition();
     }
 }

@@ -12,13 +12,13 @@ class HierarchyHelper extends AbstractHelper
      * Return the HTML necessary to render all hierarchy form elements.
      *
      */
-    public function hierarchyFormElements()
+    public function hierarchyFormElements($form)
     {
         $hierarchies = $this->getView()->api()->search('item_hierarchy')->getContent();
         
         $html = '<div id="hierarchies">';
         foreach ($hierarchies as $hierarchy) {
-            $html .= $this->hierarchyFormElement($hierarchy);
+            $html .= $this->hierarchyFormElement($form, $hierarchy);
         }
         $html .= '</div>';
         return $html;
@@ -35,20 +35,33 @@ class HierarchyHelper extends AbstractHelper
     public function formElement($form, $hierarchy = null) {
         $defaults = [
             'label' => '',
+            'data' => '',
+            'position' => '',
         ];
-        $data = $hierarchy ? $hierarchy->getData() + $defaults : $defaults;
+        $data = $hierarchy ? $hierarchy->getJsonLd() + $defaults : $defaults;
         
-        // $form = new Form();
         $form->add([
-            'name' => 'label',
+            'name' => 'hierarchy[__hierarchyIndex__][label]',
             'type' => Element\Text::class,
             'options' => [
                 'label' => 'Hierarchy Label', // @translate
             ],
         ]);
 
+        $form->add([
+            'name' => 'hierarchy[__hierarchyIndex__][data]',
+            'type' => 'hidden',
+        ]);
+
+        $form->add([
+            'name' => 'hierarchy[__hierarchyIndex__][position]',
+            'type' => 'hidden',
+        ]);
+
         $form->setData([
-            'label' => $data['label'],
+            'hierarchy[__hierarchyIndex__][label]' => $data['label'],
+            'hierarchy[__hierarchyIndex__][data]' => $data['data'],
+            'hierarchy[__hierarchyIndex__][position]' => $data['position'],
         ]);
 
         $view = $this->getView();

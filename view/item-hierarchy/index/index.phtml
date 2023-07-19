@@ -5,7 +5,6 @@ $this->headScript()->appendFile($this->assetUrl('vendor/sortablejs/Sortable.min.
 $this->headScript()->appendFile($this->assetUrl('js/item-hierarchy.js', 'ItemHierarchy'));
 $escapeHtml = $this->plugin('escapeHtml');
 $translate = $this->plugin('translate');
-$freeGroupings = $this->api()->search('item_hierarchy', ['parent_collection_id' => ''])->getContent();
 $form->prepare();
 ?>
 <?php echo $this->pageTitle($translate('Item Hierarchy')); ?>
@@ -16,27 +15,5 @@ $form->prepare();
 <div id="new-hierarchy">
     <button type= "button" class="hierarchy-add"><?php echo $escapeHtml($this->translate('Add Hierarchy')); ?></button>
 </div>
-<?php echo $this->hierarchyHelper()->hierarchyFormElements(); ?>
-
-<div id="nav-selector" class="always-open sidebar">
-    <a href="#" class="mobile-only sidebar-close o-icon-close"><span class="screen-reader-text"><?php echo $translate('Close'); ?></span></a>
-    <div class="field">
-        <label><?php echo $translate('Item Groupings'); ?></label>
-        <?php if (!empty($freeGroupings)): ?>
-        <div id="nav-custom-links">
-        <?php foreach ($freeGroupings as $grouping): ?>
-            <button
-                type="button"
-                data-type="item_hierarchy"
-                data-label="<?php echo $escape($grouping->getLabel()); ?>">
-                <?php echo sprintf('%s', $escape($grouping->getLabel())); ?>
-            </button>
-        <?php endforeach; ?>
-        </div>
-        <?php else: ?>
-        <p><?php echo $translate('There are no available groupings.'); ?></p>
-        <?php endif; ?>
-    </div>
-</div>
-
+<?php echo $this->hierarchyHelper()->hierarchyFormElements($form); ?>
 <?php echo $this->form()->closeTag($form); ?>

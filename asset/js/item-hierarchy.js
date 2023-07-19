@@ -37,13 +37,29 @@
         });
     }
 
+    function replaceIndex(context, find, index) {
+        context.find(':input').each(function() {
+            var thisInput = $(this);
+            if ($(this).attr('name') == undefined) {
+                return;
+            }
+            var name = thisInput.attr('name').replace('[__' + find + '__]', '[' + index + ']');
+            var label = thisInput.parents('.field').find('label').first();
+            thisInput.attr('name', name);
+            if (!thisInput.is(':hidden')) {
+                thisInput.attr('id', name);
+            }
+            label.attr('for', name);
+        });
+    }
+
     $(document).ready(function () {
         var list = document.getElementById('hierarchies');
-        var hierarchyIndex = 0;
+        var hierarchyIndex = 1;
         var jstreeIndex = 1;
 
         new Sortable(list, {
-            draggable: ".hierarchy",
+            draggable: ".block",
             handle: ".sortable-handle",
         });
 
@@ -53,17 +69,13 @@
                 {layout: 'hierarchy'}
             ).done(function(data) {
                 var newHierarchy = $(data).appendTo('#hierarchies');
+                replaceIndex(newHierarchy, 'hierarchyIndex', hierarchyIndex);
+                hierarchyIndex++;
                 Omeka.scrollTo(newHierarchy);
             });
         });
 
-        $('#hierarchies .hierarchy').each(function () {
-            $(this).data('hierarchyIndex', hierarchyIndex);
-            replaceIndex($(this), 'hierarchyIndex', hierarchyIndex);
-            // loadJStree(hierarchyIndex);
-            hierarchyIndex++;
-        });
-        $('#hierarchies').on('o:hierarchy-added', '.hierarchy', function () {
+        $('#hierarchies .block').each(function () {
             $(this).data('hierarchyIndex', hierarchyIndex);
             replaceIndex($(this), 'hierarchyIndex', hierarchyIndex);
             // loadJStree(hierarchyIndex);
