@@ -14,8 +14,8 @@ class HierarchyHelper extends AbstractHelper
      */
     public function hierarchyFormElements($form)
     {
-        $hierarchies = $this->getView()->api()->search('item_hierarchy')->getContent();
-        
+        $hierarchies = $this->getView()->api()->search('item_hierarchy', ['sort_by' => 'position'])->getContent();
+
         $html = '<div id="hierarchies">';
         foreach ($hierarchies as $hierarchy) {
             $html .= $this->hierarchyFormElement($form, $hierarchy);

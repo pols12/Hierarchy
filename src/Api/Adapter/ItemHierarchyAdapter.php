@@ -8,6 +8,10 @@ use Omeka\Stdlib\ErrorStore;
 
 class ItemHierarchyAdapter extends AbstractEntityAdapter
 {
+    protected $sortFields = [
+        'position' => 'position',
+    ];
+
     public function getEntityClass()
     {
         return 'ItemHierarchy\Entity\ItemHierarchy';
@@ -33,8 +37,10 @@ class ItemHierarchyAdapter extends AbstractEntityAdapter
         if (isset($data['data'])) {
             $entity->setData($data['data']);
         }
+        // (Re-)order blocks by their order in the input
+        static $position = 1;
         if (isset($data['position'])) {
-            $entity->setPosition($data['position']);
+            $entity->setPosition($position++);
         }
     }
 }
