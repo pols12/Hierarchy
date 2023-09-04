@@ -31,13 +31,14 @@ class IndexController extends AbstractActionController
                 $form->setData($formData);
                 if ($form->isValid()) {
                     unset($formData['form_csrf']);
-                    foreach($formData['hierarchy'] as $hierarchyId => $hierarchyData) {
+                    foreach($formData['hierarchy'] as $hierarchyData) {
                         //check if hierarchy already exists before adding
-                        $content = $this->api()->search('item_hierarchy', ['id' => $hierarchyId])->getContent();
+                        $hierarchyID = $hierarchyData['id'] ?: 0;
+                        $content = $this->api()->search('item_hierarchy', ['id' => $hierarchyID])->getContent();
                         if (empty($content)) {
                             $response = $this->api($form)->create('item_hierarchy', $hierarchyData);
                         } else {
-                            $response = $this->api($form)->update('item_hierarchy', $hierarchyId, $hierarchyData);
+                            $response = $this->api($form)->update('item_hierarchy', $hierarchyData['id'], $hierarchyData);
                         }
                     }
                     if ($response) {

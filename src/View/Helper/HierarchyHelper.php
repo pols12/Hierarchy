@@ -34,6 +34,7 @@ class HierarchyHelper extends AbstractHelper
 
     public function formElement($form, $hierarchy = null) {
         $defaults = [
+            'id' => '',
             'label' => '',
             'data' => '',
             'position' => '',
@@ -49,6 +50,11 @@ class HierarchyHelper extends AbstractHelper
         ]);
 
         $form->add([
+            'name' => 'hierarchy[__hierarchyIndex__][id]',
+            'type' => 'hidden',
+        ]);
+
+        $form->add([
             'name' => 'hierarchy[__hierarchyIndex__][data]',
             'type' => 'hidden',
         ]);
@@ -60,6 +66,7 @@ class HierarchyHelper extends AbstractHelper
 
         $form->setData([
             'hierarchy[__hierarchyIndex__][label]' => $data['label'],
+            'hierarchy[__hierarchyIndex__][id]' => $data['id'],
             'hierarchy[__hierarchyIndex__][data]' => $data['data'],
             'hierarchy[__hierarchyIndex__][position]' => $data['position'],
         ]);
