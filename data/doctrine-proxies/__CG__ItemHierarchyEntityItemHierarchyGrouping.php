@@ -67,10 +67,10 @@ class ItemHierarchyGrouping extends \ItemHierarchy\Entity\ItemHierarchyGrouping 
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'parent_grouping_id', 'label', 'hierarchy'];
+            return ['__isInitialized__', 'id', 'label', 'hierarchy'];
         }
 
-        return ['__isInitialized__', 'id', 'parent_grouping_id', 'label', 'hierarchy'];
+        return ['__isInitialized__', 'id', 'label', 'hierarchy'];
     }
 
     /**

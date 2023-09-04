@@ -17,12 +17,7 @@ class ItemHierarchyGrouping extends AbstractEntity
     protected $id;
     
     /**
-     * @Column(type="integer", nullable=true)
-     */
-    protected $parent_grouping_id;
-
-    /**
-     * @Column(unique=true)
+     * @Column(type="string")
      */
     protected $label;
     
