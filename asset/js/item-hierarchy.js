@@ -92,10 +92,11 @@
         });
 
         $('form').submit(function(e) {
-            $('#hierarchies .hierarchy').each(function(hierarchyIndex) {
+            $('#hierarchies .block').each(function(hierarchyIndex) {
                 var thisHierarchy = $(this);
+                // Mark hidden input to true to delete hierarchy
                 if (thisHierarchy.hasClass('delete')) {
-                    thisHierarchy.find(':input').prop('disabled', true);
+                    thisHierarchy.find("input[name*='delete']").val(1);
                 }
             });
         });

@@ -38,6 +38,7 @@ class HierarchyHelper extends AbstractHelper
             'label' => '',
             'data' => '',
             'position' => '',
+            'delete' => 0,
         ];
         $data = $hierarchy ? $hierarchy->getJsonLd() + $defaults : $defaults;
         
@@ -64,11 +65,17 @@ class HierarchyHelper extends AbstractHelper
             'type' => 'hidden',
         ]);
 
+        $form->add([
+            'name' => 'hierarchy[__hierarchyIndex__][delete]',
+            'type' => 'hidden',
+        ]);
+
         $form->setData([
             'hierarchy[__hierarchyIndex__][label]' => $data['label'],
             'hierarchy[__hierarchyIndex__][id]' => $data['id'],
             'hierarchy[__hierarchyIndex__][data]' => $data['data'],
             'hierarchy[__hierarchyIndex__][position]' => $data['position'],
+            'hierarchy[__hierarchyIndex__][delete]' => $data['delete'],
         ]);
 
         $view = $this->getView();

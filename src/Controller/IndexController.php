@@ -32,10 +32,16 @@ class IndexController extends AbstractActionController
                 if ($form->isValid()) {
                     unset($formData['form_csrf']);
                     foreach($formData['hierarchy'] as $hierarchyData) {
-                        //check if hierarchy already exists before adding
+                        // Check if hierarchy already exists before adding/removing/updating
                         $hierarchyID = $hierarchyData['id'] ?: 0;
                         $content = $this->api()->search('item_hierarchy', ['id' => $hierarchyID])->getContent();
-                        if (empty($content)) {
+                        if (!empty($hierarchyData['delete'])) {
+                            if (!empty($content)) {
+                                $response = $this->api($form)->delete('item_hierarchy', $hierarchyData['id']);
+                            } else {
+                                continue;
+                            }
+                        } else if (empty($content)) {
                             $response = $this->api($form)->create('item_hierarchy', $hierarchyData);
                         } else {
                             $response = $this->api($form)->update('item_hierarchy', $hierarchyData['id'], $hierarchyData);
