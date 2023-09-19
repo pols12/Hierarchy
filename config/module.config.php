@@ -63,6 +63,17 @@ return [
                             ],
                         ],
                         'may_terminate' => true,
+                        'child_routes' => [
+                            'action' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '[/:action]',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],

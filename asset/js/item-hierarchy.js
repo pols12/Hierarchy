@@ -4,9 +4,9 @@
     function loadJStree(index) {
         
         //Initialize unique jsTree for each hierarchy
-        var groupingTree = $("[name='o:hierarchy[" + index + "][o:layout]']").siblings('.hierarchy-hierarchy-tree');
+        var hierarchyTree = $("[name='hierarchy[" + index + "]']").siblings('#nav-tree');
         var initialTreeData;
-        groupingTree.jstree({
+        hierarchyTree.jstree({
             'core': {
                 "check_callback" : function (operation, node, parent, position, more) {
                     if(operation === "copy_node" || operation === "move_node") {
@@ -17,21 +17,21 @@
                     return true; // allow everything else
                 },
                 'force_text': true,
-                'data': groupingTree.data('jstree-data'),
+                'data': hierarchyTree.data('jstree-data'),
             },
-            'plugins': ['removenode', 'editlink']
+            'plugins': ['dnd', 'removenode', 'editlink', 'display']
         }).on('loaded.jstree', function() {
             // Open all nodes by default.
-            groupingTree.jstree(true).open_all();
-            initialTreeData = JSON.stringify(groupingTree.jstree(true).get_json());
+            hierarchyTree.jstree(true).open_all();
+            initialTreeData = JSON.stringify(hierarchyTree.jstree(true).get_json());
         }).on('move_node.jstree', function(e, data) {
             // Open node after moving it.
-            var parent = groupingTree.jstree(true).get_node(data.parent);
-            groupingTree.jstree(true).open_all(parent);
+            var parent = hierarchyTree.jstree(true).get_node(data.parent);
+            hierarchyTree.jstree(true).open_all(parent);
         });
 
-        $('#site-form').on('o:before-form-unload', function () {
-            if (initialTreeData !== JSON.stringify(groupingTree.jstree(true).get_json())) {
+        $('#hierarchy-form').on('o:before-form-unload', function () {
+            if (initialTreeData !== JSON.stringify(hierarchyTree.jstree(true).get_json())) {
                 Omeka.markDirty(this);
             }
         });
@@ -70,6 +70,7 @@
             ).done(function(data) {
                 var newHierarchy = $(data).appendTo('#hierarchies');
                 replaceIndex(newHierarchy, 'hierarchyIndex', hierarchyIndex);
+                loadJStree(hierarchyIndex);
                 hierarchyIndex++;
                 Omeka.scrollTo(newHierarchy);
             });
@@ -78,8 +79,19 @@
         $('#hierarchies .block').each(function () {
             $(this).data('hierarchyIndex', hierarchyIndex);
             replaceIndex($(this), 'hierarchyIndex', hierarchyIndex);
-            // loadJStree(hierarchyIndex);
+            loadJStree(hierarchyIndex);
             hierarchyIndex++;
+        });
+
+        $('.hierarchy').on('click', '.grouping-add', function (e) {
+            currentTree = $(e.currentTarget).siblings('.jstree').jstree();
+            nodeId = currentTree.create_node('#', {
+                text: 'Grouping',
+                data: {
+                    data: {}
+                }
+            });
+            currentTree.toggleLinkEdit($('#' + nodeId));
         });
 
         $('#hierarchies').on('click', 'a.remove-value, a.restore-value', function (e) {

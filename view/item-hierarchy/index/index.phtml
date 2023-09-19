@@ -3,6 +3,7 @@ $this->headScript()->appendFile($this->assetUrl('vendor/jstree/jstree.min.js', '
 $this->headScript()->appendFile($this->assetUrl('js/jstree-plugins.js', 'Omeka'));
 $this->headScript()->appendFile($this->assetUrl('vendor/sortablejs/Sortable.min.js', 'Omeka'));
 $this->headScript()->appendFile($this->assetUrl('js/item-hierarchy.js', 'ItemHierarchy'));
+$this->headLink()->appendStylesheet($this->assetUrl('css/jstree.css', 'Omeka'));
 $escapeHtml = $this->plugin('escapeHtml');
 $translate = $this->plugin('translate');
 $form->prepare();

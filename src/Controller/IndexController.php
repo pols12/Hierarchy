@@ -65,6 +65,14 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
+    public function groupingFormAction()
+    {
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setVariable('data', $this->params()->fromPost('data'));
+        return $view;
+    }
+
     public function toJstree(array $data)
     {
         $buildLinks = function ($linksIn) use (&$buildLinks) {

@@ -3,7 +3,7 @@ $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 ?>
 
-<div class="block value">
+<div class="hierarchy block value">
     <div class="block-header collapse">
         <span class="sortable-handle"></span>
         <span class="block-type"><?php echo $escape($label); ?></span>
@@ -15,6 +15,11 @@ $escape = $this->plugin('escapeHtml');
         </ul>
     </div>
     <div class="block-content collapsible">
+        <input type="hidden" name="hierarchy[__hierarchyIndex__]">
         <?php echo $hierarchyContent; ?>
+        <button type="button" class="grouping-add"><?php echo $translate('Add grouping'); ?></button>
+        <div id="nav-tree"
+            data-link-form-url="<?php echo $escape($this->url('admin/item-hierarchy/action', ['action' => 'grouping-form'], true)); ?>"
+            data-jstree-data=""></div>
     </div>
 </div>
