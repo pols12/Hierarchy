@@ -106,10 +106,23 @@
         $('form').submit(function(e) {
             $('#hierarchies .block').each(function(hierarchyIndex) {
                 var thisHierarchy = $(this);
+                var thisJstree = thisHierarchy.find('#nav-tree').jstree();
                 // Mark hidden input to true to delete hierarchy
                 if (thisHierarchy.hasClass('delete')) {
                     thisHierarchy.find("input[name*='delete']").val(1);
                 }
+                // Prepare jstree data for submission
+                thisHierarchy.find('input[data-name]').each(function(index, element) {
+                    var nodeObj = thisJstree.get_node(element);
+                    var element = $(element);
+                    // Rename nodes with new label values
+                    if (element.data('name') == 'label' && element.val()) {
+                        thisJstree.rename_node(nodeObj, element.val())
+                    }
+                    nodeObj.data['data'][element.data('name')] = element.val()
+                });
+                var jsTreeData = JSON.stringify(thisJstree.get_json());
+                thisHierarchy.find("input[name*='data']").val(jsTreeData);
             });
         });
 

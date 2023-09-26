@@ -25,13 +25,11 @@ class IndexController extends AbstractActionController
                 $response->setContent($content);
                 return $response;
             } else {
-                // $jstree = json_decode($formData['jstree'], true);
-                // $jstreeData = $this->fromJstree($jstree);
-                $jstreeData = [];
                 $form->setData($formData);
                 if ($form->isValid()) {
                     unset($formData['form_csrf']);
                     foreach($formData['hierarchy'] as $hierarchyData) {
+
                         // Check if hierarchy already exists before adding/removing/updating
                         $hierarchyID = $hierarchyData['id'] ?: 0;
                         $content = $this->api()->search('item_hierarchy', ['id' => $hierarchyID])->getContent();
@@ -55,12 +53,9 @@ class IndexController extends AbstractActionController
                     $this->messenger()->addFormErrors($form);
                 }
             }
-        } else {
-            $jstreeData = [];
         }
 
         $view = new ViewModel;
-        $view->setVariable('hierarchyTree', $this->toJstree($jstreeData));
         $view->setVariable('form', $form);
         return $view;
     }
@@ -71,27 +66,5 @@ class IndexController extends AbstractActionController
         $view->setTerminal(true);
         $view->setVariable('data', $this->params()->fromPost('data'));
         return $view;
-    }
-
-    public function toJstree(array $data)
-    {
-        $buildLinks = function ($linksIn) use (&$buildLinks) {
-            $linksOut = [];
-            foreach ($linksIn as $linkData) {
-                $linkData = $linkData['data'];
-                $linkLabel = isset($linkData['label']) && '' !== trim($linkData['label']) ? $linkData['label'] : null;
-                $linksOut[] = [
-                    'text' => $linkLabel,
-                    'data' => [
-                        'label' => $linkData['label'],
-                        'query' => $linkData['query'],
-                    ],
-                    'children' => $linkData['links'] ? $buildLinks($linkData['links']) : [],
-                ];
-            }
-            return $linksOut;
-        };
-        $links = $buildLinks($data);
-        return $links;
     }
 }

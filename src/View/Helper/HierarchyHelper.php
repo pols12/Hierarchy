@@ -28,7 +28,8 @@ class HierarchyHelper extends AbstractHelper
         $view = $this->getView();
         return $view->partial('item-hierarchy/common/hierarchy', [
             'label' => $hierarchy ? $hierarchy->getLabel() : null,
-            'hierarchyContent' => $this->formElement($form, $hierarchy)
+            'jsTreeData' => $hierarchy ? $hierarchy->getData() : '',
+            'hierarchyContent' => $this->formElement($form, $hierarchy),
         ]);
     }
 
