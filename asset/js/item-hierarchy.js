@@ -121,6 +121,12 @@
                     }
                     nodeObj.data['data'][element.data('name')] = element.val()
                 });
+                // Remove deleted nodes and any children
+                thisHierarchy.find('.jstree-node').each(function(index, element) {
+                    if (element.classList.contains('jstree-removenode-removed')) {
+                        thisJstree.delete_node(element);
+                    };
+                });
                 var jsTreeData = JSON.stringify(thisJstree.get_json());
                 thisHierarchy.find("input[name*='data']").val(jsTreeData);
             });
