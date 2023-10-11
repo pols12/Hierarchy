@@ -10,11 +10,6 @@ return [
             ],
         ],
     ],
-    'service_manager' => [
-        // 'factories' => [
-        //     'PersistentIdentifiers\PIDSelectorManager' => PersistentIdentifiers\Service\PIDSelector\ManagerFactory::class,
-        // ],
-    ],
     'api_adapters' => [
         'invokables' => [
             'item_hierarchy' => 'ItemHierarchy\Api\Adapter\ItemHierarchyAdapter',
@@ -30,6 +25,11 @@ return [
             OMEKA_PATH . '/modules/ItemHierarchy/view',
         ],
     ],
+    'block_layouts' => [
+        'invokables' => [
+            'itemHierarchy' => ItemHierarchy\Site\BlockLayout\ItemHierarchy::class,
+        ],
+    ],
     'view_helpers' => [
         'invokables' => [
             'hierarchyHelper' => ItemHierarchy\View\Helper\HierarchyHelper::class,
@@ -43,11 +43,6 @@ return [
             OMEKA_PATH . '/modules/ItemHierarchy/data/doctrine-proxies',
         ],
     ],
-    // 'form_elements' => [
-    //     'factories' => [
-    //         'ItemHierarchy\Form\ConfigForm' => 'ItemHierarchy\Service\Form\ConfigFormFactory',
-    //     ],
-    // ],
     'router' => [
         'routes' => [
             'admin' => [

@@ -1,0 +1,21 @@
+<div>
+    <ul>
+        <?php $iterate = function ($groupings) use (&$iterate) {
+            foreach ($groupings as $grouping) {
+                $groupingName = $grouping['text'];
+                $groupingQuery = $grouping['data']['data']['query'];
+                if (empty($groupingQuery)) {
+                    echo '<li>' . $groupingName . '</li>';
+                } else {
+                    echo '<li>' . $this->hyperlink($groupingName, $this->url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => $groupingQuery], true)) . '</li>';
+                }
+                if (isset($grouping['children'])) {
+                    echo '<ul>';
+                    $iterate($grouping['children']);
+                    echo '</ul>';
+                }
+            }
+        };
+        $iterate($hierarchyData); ?>
+    </ul>
+</div>

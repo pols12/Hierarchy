@@ -2,9 +2,10 @@
 $this->headScript()->appendFile($this->assetUrl('vendor/jstree/jstree.min.js', 'Omeka'));
 $this->headScript()->appendFile($this->assetUrl('js/jstree-plugins.js', 'Omeka'));
 $this->headScript()->appendFile($this->assetUrl('vendor/sortablejs/Sortable.min.js', 'Omeka'));
-$this->headScript()->appendFile($this->assetUrl('js/item-hierarchy.js', 'ItemHierarchy'));
+$this->headScript()->appendFile($this->assetUrl('js/advanced-search.js', 'Omeka'));
 $this->headScript()->appendFile($this->assetUrl('js/query-form.js', 'Omeka'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/jstree.css', 'Omeka'));
+$this->headScript()->appendFile($this->assetUrl('js/item-hierarchy.js', 'ItemHierarchy'));
 $escapeHtml = $this->plugin('escapeHtml');
 $translate = $this->plugin('translate');
 $form->prepare();
