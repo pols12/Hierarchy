@@ -83,7 +83,7 @@
             hierarchyIndex++;
         });
 
-        $('.hierarchy').on('click', '.grouping-add', function (e) {
+        $('#hierarchies').on('click', '.grouping-add', function (e) {
             currentTree = $(e.currentTarget).siblings('.jstree').jstree();
             nodeId = currentTree.create_node('#', {
                 text: 'Grouping',
