@@ -2,13 +2,13 @@
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $label = isset($data['label']) && '' !== trim($data['label']) ? $data['label'] : null;
-$query = isset($data['query']) && '' !== trim($data['query']) ? $data['query'] : null;
+$itemSet = isset($data['itemSet']) && '' !== trim($data['itemSet']) ? $data['itemSet'] : null;
 
-$queryElement = (new Omeka\Form\Element\Query('query'))
-    ->setLabel($this->translate('Search query'))
-    ->setValue($query)
-    ->setAttribute('data-name', 'query')
-    ->setOption('query_resource_type', 'items');
+$itemSetElement = (new Laminas\Form\Element\Select('itemSet'))
+    ->setLabel($this->translate('Item Set'))
+    ->setValueOptions($itemSetArray)
+    ->setValue($itemSet)
+    ->setAttribute('data-name', 'itemSet')
 ?>
-<label><?php echo $translate('Label'); ?> <input type="text" data-name="label" value="<?php echo $escape($label); ?>"></label>
-<label><?php echo $translate('Query'); ?><?php echo $this->formElement($queryElement); ?></label>
+<label><?php echo $translate('Label'); ?><input type="text" data-name="label" value="<?php echo $escape($label); ?>"></label>
+<label><?php echo $translate('Item Set'); ?><?php echo $this->formElement($itemSetElement); ?></label>

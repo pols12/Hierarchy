@@ -64,6 +64,14 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         $view->setTerminal(true);
+
+        $itemSetArray = [];
+        $itemSets = $this->api()->search('item_sets')->getContent();
+        foreach ($itemSets as $itemSet) {
+            $itemSetArray[$itemSet->id()] = $itemSet->title();
+        }
+
+        $view->setVariable('itemSetArray', $itemSetArray);
         $view->setVariable('data', $this->params()->fromPost('data'));
         return $view;
     }

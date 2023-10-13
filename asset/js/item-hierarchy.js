@@ -112,7 +112,7 @@
                     thisHierarchy.find("input[name*='delete']").val(1);
                 }
                 // Prepare jstree data for submission
-                thisHierarchy.find('input[data-name]').each(function(index, element) {
+                thisHierarchy.find('input[data-name], select[data-name]').each(function(index, element) {
                     var nodeObj = thisJstree.get_node(element);
                     var element = $(element);
                     // Rename nodes with new label values

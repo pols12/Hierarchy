@@ -1,6 +1,6 @@
 # Item Hierarchy
 
-Create hierarchies of resources for organization and display. Each hierarchy can contain multiple nested groupings, and each grouping may contain a set of resources assigned by a resource query.
+Create hierarchies of resources for organization and display. Each hierarchy can contain multiple nested groupings, and each grouping may optionally contain objects from a selected item set.
 
 See the Omeka S user manual for user documentation.
 
