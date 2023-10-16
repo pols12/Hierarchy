@@ -42,17 +42,11 @@ class ItemHierarchy extends AbstractBlockLayout
 	public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
 	{	
         $hierarchy = $view->api()->read('item_hierarchy', $block->dataValue('itemHierarchy'))->getContent();
-		$writer = new \Laminas\Log\Writer\Stream('logs/application.log');
-		$logger = new \Laminas\Log\Logger();
-		$logger->addWriter($writer);
 		if (!$hierarchy) {
             return '';
         }
 		
 		$hierarchyData = json_decode($hierarchy->getData(), true);
-		// $logger->info(print_r($hierarchyData, 1));
-
-        // $pageTree = $this->getPageNodeURLs($nodes, $block);
 
         return $view->partial('item-hierarchy/common/block-layout/hierarchy-public', [
             'hierarchyData' => $hierarchyData,
