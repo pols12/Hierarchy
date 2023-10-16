@@ -7,7 +7,8 @@ $itemSet = isset($data['itemSet']) && '' !== trim($data['itemSet']) ? $data['ite
 $itemSetElement = (new Laminas\Form\Element\Select('itemSet'))
     ->setLabel($this->translate('Item Set'))
     ->setValueOptions($itemSetArray)
-    ->setValue($itemSet)
+    ->setEmptyOption($this->translate('Select Item Set...'))
+    ->setValue($itemSet ?? '')
     ->setAttribute('data-name', 'itemSet')
 ?>
 <label><?php echo $translate('Label'); ?><input type="text" data-name="label" value="<?php echo $escape($label); ?>"></label>

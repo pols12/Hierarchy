@@ -68,6 +68,7 @@ class IndexController extends AbstractActionController
         $itemSetArray = [];
         $itemSets = $this->api()->search('item_sets')->getContent();
         foreach ($itemSets as $itemSet) {
+            if ($itemSet->title() != '')
             $itemSetArray[$itemSet->id()] = $itemSet->title();
         }
 
