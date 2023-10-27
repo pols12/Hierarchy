@@ -2,6 +2,7 @@
 namespace ItemHierarchy\Entity;
 
 use Omeka\Entity\AbstractEntity;
+use Omeka\Entity\ItemSet;
 use ItemHierarchy\Entity\ItemHierarchyBlock;
 
 /**
@@ -17,13 +18,25 @@ class ItemHierarchyGrouping extends AbstractEntity
     protected $id;
     
     /**
+     * @Column(type="integer", nullable=true)
+     */
+    protected $parent_grouping;
+
+    /**
      * @Column(type="string")
      */
     protected $label;
-    
+
+    /**
+     * @ManyToOne(targetEntity="Omeka\Entity\ItemSet")
+     * @JoinColumn(nullable=false, onDelete="CASCADE")
+     * @var int
+     */
+    protected $item_set;
+
     /**
      * @OneToOne(targetEntity="ItemHierarchy\Entity\ItemHierarchy")
-     * @JoinColumn(nullable=false)
+     * @JoinColumn(nullable=false, onDelete="CASCADE")
      */
     protected $hierarchy;
 
@@ -32,9 +45,9 @@ class ItemHierarchyGrouping extends AbstractEntity
         return $this->id;
     }
 
-    public function setParentGroupingId($parentGroupingId)
+    public function setParentGrouping($parentGrouping)
     {
-        $this->parent_grouping_id = $parentGroupingId;
+        $this->parent_grouping = $parentGrouping;
     }
 
     public function getParentGroupingId()
@@ -52,6 +65,16 @@ class ItemHierarchyGrouping extends AbstractEntity
         return $this->label;
     }
     
+    public function setItemSet(ItemSet $itemSet)
+    {
+        $this->item_set = $itemSet;
+    }
+
+    public function getItemSet()
+    {
+        return $this->item_set;
+    }
+
     public function setHierarchy(ItemHierarchy $hierarchy)
     {
         $this->hierarchy = $hierarchy;

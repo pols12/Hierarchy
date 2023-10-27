@@ -26,7 +26,6 @@ class ItemHierarchyRepresentation extends AbstractEntityRepresentation
         return [
             'id' => $this->getId(),
             'label' => $this->getLabel(),
-            'data' => $this->getData(),
             'position' => $this->getPosition(),
         ];
     }
@@ -44,11 +43,6 @@ class ItemHierarchyRepresentation extends AbstractEntityRepresentation
     public function getLabel()
     {
         return $this->hierarchy->getLabel();
-    }
-
-    public function getData()
-    {
-        return $this->hierarchy->getData();
     }
 
     public function getPosition()

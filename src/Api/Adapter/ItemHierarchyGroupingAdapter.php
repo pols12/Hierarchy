@@ -27,9 +27,9 @@ class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
         ErrorStore $errorStore
     ) {
         $data = $request->getContent();
-        if (isset($data['o:item']['o:id'])) {
-            $item = $this->getAdapter('items')->findEntity($data['o:item']['o:id']);
-            $entity->setItem($item);
+        if (isset($data['o:item_set']['o:id'])) {
+            $itemSet = $this->getAdapter('item_sets')->findEntity($data['o:item_set']['o:id']);
+            $entity->setItemSet($itemSet);
         }
         if (isset($data['parentGroupingID'])) {
             $entity->setParentGroupingID($data['parentGroupingID']);

@@ -67,10 +67,10 @@ class ItemHierarchyGrouping extends \ItemHierarchy\Entity\ItemHierarchyGrouping 
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'label', 'hierarchy'];
+            return ['__isInitialized__', 'id', 'parent_grouping', 'label', 'item_set', 'hierarchy'];
         }
 
-        return ['__isInitialized__', 'id', 'label', 'hierarchy'];
+        return ['__isInitialized__', 'id', 'parent_grouping', 'label', 'item_set', 'hierarchy'];
     }
 
     /**
@@ -195,12 +195,12 @@ class ItemHierarchyGrouping extends \ItemHierarchy\Entity\ItemHierarchyGrouping 
     /**
      * {@inheritDoc}
      */
-    public function setParentGroupingId($parentGroupingId)
+    public function setParentGrouping($parentGrouping)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setParentGroupingId', [$parentGroupingId]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setParentGrouping', [$parentGrouping]);
 
-        return parent::setParentGroupingId($parentGroupingId);
+        return parent::setParentGrouping($parentGrouping);
     }
 
     /**
@@ -234,6 +234,28 @@ class ItemHierarchyGrouping extends \ItemHierarchy\Entity\ItemHierarchyGrouping 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLabel', []);
 
         return parent::getLabel();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setItemSet(\Omeka\Entity\ItemSet $itemSet)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setItemSet', [$itemSet]);
+
+        return parent::setItemSet($itemSet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getItemSet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getItemSet', []);
+
+        return parent::getItemSet();
     }
 
     /**

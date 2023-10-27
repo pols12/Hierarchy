@@ -21,11 +21,6 @@ class ItemHierarchy extends AbstractEntity
     protected $label;
 
     /**
-     * @Column(type="json_array")
-     */
-    protected $data;
-
-    /**
      * @Column(type="integer")
      */
     protected $position;
@@ -43,16 +38,6 @@ class ItemHierarchy extends AbstractEntity
     public function getLabel()
     {
         return $this->label;
-    }
-
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    public function getData()
-    {
-        return $this->data;
     }
 
     public function setPosition($position)

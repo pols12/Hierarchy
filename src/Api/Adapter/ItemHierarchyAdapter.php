@@ -34,9 +34,6 @@ class ItemHierarchyAdapter extends AbstractEntityAdapter
         if (isset($data['label'])) {
             $entity->setLabel($data['label']);
         }
-        if (isset($data['data'])) {
-            $entity->setData($data['data']);
-        }
         // (Re-)order blocks by their order in the input
         static $position = 1;
         if (isset($data['position'])) {

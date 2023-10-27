@@ -67,10 +67,10 @@ class ItemHierarchy extends \ItemHierarchy\Entity\ItemHierarchy implements \Doct
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'label', 'data', 'position'];
+            return ['__isInitialized__', 'id', 'label', 'position'];
         }
 
-        return ['__isInitialized__', 'id', 'label', 'data', 'position'];
+        return ['__isInitialized__', 'id', 'label', 'position'];
     }
 
     /**
@@ -212,28 +212,6 @@ class ItemHierarchy extends \ItemHierarchy\Entity\ItemHierarchy implements \Doct
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLabel', []);
 
         return parent::getLabel();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setData($data)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setData', [$data]);
-
-        return parent::setData($data);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getData()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getData', []);
-
-        return parent::getData();
     }
 
     /**
