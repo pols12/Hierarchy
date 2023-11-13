@@ -29,10 +29,9 @@ class IndexController extends AbstractActionController
                 if ($form->isValid()) {
                     unset($formData['form_csrf']);
                     foreach($formData['hierarchy'] as $hierarchyData) {
-
                         // Check if hierarchy already exists before adding/removing/updating
                         $hierarchyID = $hierarchyData['id'] ?: 0;
-                        $content = $this->api()->search('item_hierarchy', ['id' => $hierarchyID])->getContent();
+                        $content = $this->api()->searchOne('item_hierarchy', ['id' => $hierarchyID])->getContent();
                         if (!empty($hierarchyData['delete'])) {
                             if (!empty($content)) {
                                 $response = $this->api($form)->delete('item_hierarchy', $hierarchyData['id']);
@@ -40,9 +39,12 @@ class IndexController extends AbstractActionController
                                 continue;
                             }
                         } else if (empty($content)) {
-                            $response = $this->api($form)->create('item_hierarchy', $hierarchyData);
+                            $hierarchyResponse = $this->api($form)->create('item_hierarchy', $hierarchyData);
+                            $hierarchyData['id'] = $hierarchyResponse ? $hierarchyResponse->getContent()->id() : '';
+                            $response = $this->saveTreeData($hierarchyData);
                         } else {
-                            $response = $this->api($form)->update('item_hierarchy', $hierarchyData['id'], $hierarchyData);
+                            // $response = $this->updateTreeData($hierarchyData);
+                            // $response = $this->api($form)->update('item_hierarchy', $hierarchyData['id'], $hierarchyData);
                         }
                     }
                     if ($response) {
@@ -73,7 +75,30 @@ class IndexController extends AbstractActionController
         }
 
         $view->setVariable('itemSetArray', $itemSetArray);
-        $view->setVariable('data', $this->params()->fromPost('data'));
+        $view->setVariable('data', $this->params()->fromPost());
         return $view;
+    }
+
+    public function saveTreeData($hierarchyData)
+    {
+        $hierarchyID = $hierarchyData['id'];
+        $iterate = function ($groupings) use (&$iterate, $hierarchyID, &$parentGrouping) {
+            foreach ($groupings as $grouping) {
+                $groupingData['item_set'] = $grouping['data']['itemSet'] ?: null;
+                $groupingData['hierarchy'] = $hierarchyID;
+                $groupingData['parent_grouping'] = $parentGrouping ?: '';
+                $groupingData['label'] = $grouping['data']['label'];
+                $response = $this->api()->create('item_hierarchy_grouping', $groupingData);
+                if (count($grouping['children']) > 0) {
+                    // Store ID of parent with each child
+                    $parentGrouping = $response ? $response->getContent()->id() : '';
+                    $iterate($grouping['children']);
+                } else {
+                    $parentGrouping = '';
+                }
+            }
+        };
+        $iterate(json_decode($hierarchyData['data'], true));
+        return true;
     }
 }

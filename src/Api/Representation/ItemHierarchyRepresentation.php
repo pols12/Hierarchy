@@ -24,7 +24,7 @@ class ItemHierarchyRepresentation extends AbstractEntityRepresentation
     public function getJsonLd()
     {
         return [
-            'id' => $this->getId(),
+            'id' => $this->id(),
             'label' => $this->getLabel(),
             'position' => $this->getPosition(),
         ];
@@ -35,7 +35,7 @@ class ItemHierarchyRepresentation extends AbstractEntityRepresentation
         return 'o:ItemHierarchy';
     }
 
-    public function getId()
+    public function id()
     {
         return $this->hierarchy->getId();
     }

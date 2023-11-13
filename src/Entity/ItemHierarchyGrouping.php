@@ -23,19 +23,19 @@ class ItemHierarchyGrouping extends AbstractEntity
     protected $parent_grouping;
 
     /**
-     * @Column(type="string")
+     * @Column(type="string", nullable=true)
      */
     protected $label;
 
     /**
      * @ManyToOne(targetEntity="Omeka\Entity\ItemSet")
-     * @JoinColumn(nullable=false, onDelete="CASCADE")
+     * @JoinColumn(nullable=true, onDelete="CASCADE")
      * @var int
      */
     protected $item_set;
 
     /**
-     * @OneToOne(targetEntity="ItemHierarchy\Entity\ItemHierarchy")
+     * @ManyToOne(targetEntity="ItemHierarchy\Entity\ItemHierarchy")
      * @JoinColumn(nullable=false, onDelete="CASCADE")
      */
     protected $hierarchy;
@@ -50,9 +50,9 @@ class ItemHierarchyGrouping extends AbstractEntity
         $this->parent_grouping = $parentGrouping;
     }
 
-    public function getParentGroupingId()
+    public function getParentGrouping()
     {
-        return $this->parent_grouping_id;
+        return $this->parent_grouping;
     }
 
     public function setLabel($label)

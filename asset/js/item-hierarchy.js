@@ -87,9 +87,7 @@
             currentTree = $(e.currentTarget).siblings('.jstree').jstree();
             nodeId = currentTree.create_node('#', {
                 text: 'Grouping',
-                data: {
-                    data: {}
-                }
+                data: {}
             });
             currentTree.toggleLinkEdit($('#' + nodeId));
         });
@@ -115,11 +113,13 @@
                 thisHierarchy.find('input[data-name], select[data-name]').each(function(index, element) {
                     var nodeObj = thisJstree.get_node(element);
                     var element = $(element);
+                    if (element.val()) {
+                        nodeObj.data[element.data('name')] = element.val();
+                    }
                     // Rename nodes with new label values
                     if (element.data('name') == 'label' && element.val()) {
-                        thisJstree.rename_node(nodeObj, element.val())
+                        thisJstree.rename_node(nodeObj, element.val());
                     }
-                    nodeObj.data['data'][element.data('name')] = element.val()
                 });
                 // Remove deleted nodes and any children
                 thisHierarchy.find('.jstree-node').each(function(index, element) {

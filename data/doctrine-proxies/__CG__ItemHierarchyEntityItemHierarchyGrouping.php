@@ -206,12 +206,12 @@ class ItemHierarchyGrouping extends \ItemHierarchy\Entity\ItemHierarchyGrouping 
     /**
      * {@inheritDoc}
      */
-    public function getParentGroupingId()
+    public function getParentGrouping()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParentGroupingId', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParentGrouping', []);
 
-        return parent::getParentGroupingId();
+        return parent::getParentGrouping();
     }
 
     /**

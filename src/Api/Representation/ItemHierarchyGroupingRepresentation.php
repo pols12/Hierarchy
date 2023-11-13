@@ -20,9 +20,9 @@ class ItemHierarchyGroupingRepresentation extends AbstractEntityRepresentation
         return 'o:ItemHierarchyGrouping';
     }
 
-    public function getParentGroupingID()
+    public function getParentGrouping()
     {
-        return $this->resource->getParentGroupingID();
+        return $this->resource->getParentGrouping();
     }
 
     public function getLabel()

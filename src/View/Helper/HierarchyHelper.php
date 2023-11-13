@@ -28,7 +28,7 @@ class HierarchyHelper extends AbstractHelper
         $view = $this->getView();
         return $view->partial('item-hierarchy/common/hierarchy', [
             'label' => $hierarchy ? $hierarchy->getLabel() : null,
-            'jsTreeData' => $hierarchy ? $hierarchy->getData() : '',
+            'jsTreeData' => $hierarchy ? $this->toJstree($hierarchy) : '',
             'hierarchyContent' => $this->formElement($form, $hierarchy),
         ]);
     }
@@ -81,5 +81,41 @@ class HierarchyHelper extends AbstractHelper
 
         $view = $this->getView();
         return $view->formCollection($form);
+    }
+
+    public function toJstree($hierarchy)
+    {
+        $hierarchyID = $hierarchy->id();
+        $allGroupings = $this->getView()->api()->search('item_hierarchy_grouping', ['hierarchy' => $hierarchyID])->getContent();
+
+        $iterate = function ($groupings) use (&$iterate, &$allGroupings, &$childNode) {
+            $jstreeNodes = [];
+            foreach ($groupings as $key => $grouping) {
+                // Skip groupings with parent unless on 'children' subarray iteration
+                if ($grouping->getParentGrouping() != 0 && !$childNode) {
+                    continue;
+                }
+                $jstreeNodes[$key] = [
+                    'text' => $grouping->getLabel() ?: '',
+                    'data' => [
+                        'label' => $grouping->getLabel() ?: '',
+                        'itemSet' => $grouping->getItemSet() ? $grouping->getItemSet()->getId() : '',
+                    ],
+                ];
+                // Return any groupings with current grouping ID as parent
+                $childArray = array_filter($allGroupings, function($child) use($grouping) {
+                    return $child->getParentGrouping() == $grouping->id();
+                });
+                if (count($childArray) > 0) {
+                    $childNode = true;
+                     $jstreeNodes[$key]['children'] = $iterate($childArray);
+                } else {
+                    $childNode = false;
+                }
+            }
+            return array_values($jstreeNodes);
+        };
+
+        return $iterate($allGroupings);
     }
 }

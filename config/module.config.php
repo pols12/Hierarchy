@@ -13,6 +13,7 @@ return [
     'api_adapters' => [
         'invokables' => [
             'item_hierarchy' => 'ItemHierarchy\Api\Adapter\ItemHierarchyAdapter',
+            'item_hierarchy_grouping' => 'ItemHierarchy\Api\Adapter\ItemHierarchyGroupingAdapter',
         ],
     ],
     'controllers' => [
