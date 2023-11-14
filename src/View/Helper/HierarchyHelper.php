@@ -100,6 +100,7 @@ class HierarchyHelper extends AbstractHelper
                     'data' => [
                         'label' => $grouping->getLabel() ?: '',
                         'itemSet' => $grouping->getItemSet() ? $grouping->getItemSet()->getId() : '',
+                        'groupingID' => $grouping->id(),
                     ],
                 ];
                 // Return any groupings with current grouping ID as parent

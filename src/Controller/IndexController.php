@@ -41,10 +41,10 @@ class IndexController extends AbstractActionController
                         } else if (empty($content)) {
                             $hierarchyResponse = $this->api($form)->create('item_hierarchy', $hierarchyData);
                             $hierarchyData['id'] = $hierarchyResponse ? $hierarchyResponse->getContent()->id() : '';
-                            $response = $this->saveTreeData($hierarchyData);
+                            $response = $this->updateTreeData($hierarchyData);
                         } else {
-                            // $response = $this->updateTreeData($hierarchyData);
-                            // $response = $this->api($form)->update('item_hierarchy', $hierarchyData['id'], $hierarchyData);
+                            $hierarchyResponse = $this->api($form)->update('item_hierarchy', $hierarchyID, $hierarchyData);
+                            $response = $this->updateTreeData($hierarchyData);
                         }
                     }
                     if ($response) {
@@ -79,16 +79,22 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
-    public function saveTreeData($hierarchyData)
+    public function updateTreeData($hierarchyData)
     {
         $hierarchyID = $hierarchyData['id'];
         $iterate = function ($groupings) use (&$iterate, $hierarchyID, &$parentGrouping) {
             foreach ($groupings as $grouping) {
+                $groupingID = $grouping['data']['groupingID'] ?: null;
                 $groupingData['item_set'] = $grouping['data']['itemSet'] ?: null;
                 $groupingData['hierarchy'] = $hierarchyID;
                 $groupingData['parent_grouping'] = $parentGrouping ?: '';
                 $groupingData['label'] = $grouping['data']['label'];
-                $response = $this->api()->create('item_hierarchy_grouping', $groupingData);
+                if ($groupingID) {
+                    // Update existing grouping metadata
+                    $response = $this->api()->update('item_hierarchy_grouping', $groupingID, $groupingData);
+                } else {
+                    $response = $this->api()->create('item_hierarchy_grouping', $groupingData);
+                }
                 if (count($grouping['children']) > 0) {
                     // Store ID of parent with each child
                     $parentGrouping = $response ? $response->getContent()->id() : '';
