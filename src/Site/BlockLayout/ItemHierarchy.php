@@ -24,7 +24,7 @@ class ItemHierarchy extends AbstractBlockLayout
 		
 		$options = [];
 		foreach ($hierarchies as $hierarchy) {
-            $options[$hierarchy->getId()] = $hierarchy->getLabel();
+            $options[$hierarchy->id()] = $hierarchy->getLabel();
         }
 
         $setHierarchy = $block ? $block->dataValue('itemHierarchy') : '';
@@ -45,8 +45,8 @@ class ItemHierarchy extends AbstractBlockLayout
 		if (!$hierarchy) {
             return '';
         }
-		
-		$hierarchyData = json_decode($hierarchy->getData(), true);
+
+		$hierarchyData = $view->hierarchyHelper()->toJstree($hierarchy);
 
         return $view->partial('item-hierarchy/common/block-layout/hierarchy-public', [
             'hierarchyData' => $hierarchyData,

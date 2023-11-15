@@ -3,7 +3,7 @@
         <?php $iterate = function ($groupings) use (&$iterate) {
             foreach ($groupings as $grouping) {
                 $groupingName = $grouping['text'];
-                $groupingSet = $grouping['data']['data']['itemSet'];
+                $groupingSet = $grouping['data']['itemSet'];
                 if (empty($groupingSet)) {
                     echo '<li>' . $groupingName . '</li>';
                 } else {
