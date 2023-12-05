@@ -35,8 +35,8 @@ class ItemHierarchyGroupingRepresentation extends AbstractEntityRepresentation
         return $this->resource->getItemSet();
     }
 
-    public function getGrouping()
+    public function getHierarchy()
     {
-        return $this->resource->getGrouping();
+        return $this->resource->getHierarchy();
     }
 }

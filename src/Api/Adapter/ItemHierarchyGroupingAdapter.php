@@ -28,7 +28,7 @@ class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
     {
         if (isset($query['item_set'])) {
             $qb->andWhere($qb->expr()->eq(
-                'omeka_root.itemSet',
+                'omeka_root.item_set',
                 $this->createNamedParameter($qb, $query['item_set']))
             );
         }
