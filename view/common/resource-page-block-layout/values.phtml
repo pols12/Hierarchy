@@ -1,7 +1,8 @@
 <?php
+$translate = $this->plugin('translate');
 if ($resource->getControllerName() == 'item-set') {
     echo '<dl><div class="property">';
-    echo '<dt> Hierarchies </dt>';
+    echo '<dt>' . $translate('Hierarchies') . '</dt>';
     $groupings = $this->api()->search('item_hierarchy_grouping', ['item_set' => $resource->id()])->getContent();
     $iterate = function ($groupings, $resource) use (&$iterate, &$allGroupings, &$currentHierarchy) {
         foreach ($groupings as $key => $grouping) {
