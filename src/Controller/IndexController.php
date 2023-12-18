@@ -89,6 +89,7 @@ class IndexController extends AbstractActionController
                 $groupingData['hierarchy'] = $hierarchyID;
                 $groupingData['parent_grouping'] = $parentGrouping ?: '';
                 $groupingData['label'] = $grouping['data']['label'];
+                $groupingData['position'] = $grouping['data']['position'] ?: '';
                 if ($groupingID) {
                     // Update existing grouping metadata
                     $response = $this->api()->update('item_hierarchy_grouping', $groupingID, $groupingData);

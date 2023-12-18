@@ -86,7 +86,7 @@ class HierarchyHelper extends AbstractHelper
     public function toJstree($hierarchy)
     {
         $hierarchyID = $hierarchy->id();
-        $allGroupings = $this->getView()->api()->search('item_hierarchy_grouping', ['hierarchy' => $hierarchyID])->getContent();
+        $allGroupings = $this->getView()->api()->search('item_hierarchy_grouping', ['hierarchy' => $hierarchyID, 'sort_by' => 'position'])->getContent();
 
         $iterate = function ($groupings) use (&$iterate, &$allGroupings, &$childNode) {
             $jstreeNodes = [];

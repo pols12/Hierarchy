@@ -12,6 +12,7 @@ class ItemHierarchyGroupingRepresentation extends AbstractEntityRepresentation
             'label' => $this->resource->getLabel(),
             'itemSet' => $this->resource->getItemSet(),
             'hierarchy' => $this->resource->getHierarchy(),
+            'position' => $this->getPosition(),
         ];
     }
 
@@ -38,5 +39,10 @@ class ItemHierarchyGroupingRepresentation extends AbstractEntityRepresentation
     public function getHierarchy()
     {
         return $this->resource->getHierarchy();
+    }
+
+    public function getPosition()
+    {
+        return $this->hierarchy->getPosition();
     }
 }

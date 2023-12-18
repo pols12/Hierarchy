@@ -21,7 +21,7 @@ class Module extends AbstractModule
     public function install(ServiceLocatorInterface $serviceLocator)
     {
         $connection = $serviceLocator->get('Omeka\Connection');
-        $connection->exec('CREATE TABLE item_hierarchy_grouping (id INT AUTO_INCREMENT NOT NULL, item_set_id INT DEFAULT NULL, hierarchy_id INT NOT NULL, parent_grouping INT DEFAULT NULL, `label` VARCHAR(255) DEFAULT NULL, INDEX IDX_888D30B9960278D7 (item_set_id), INDEX IDX_888D30B9582A8328 (hierarchy_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
+        $connection->exec('CREATE TABLE item_hierarchy_grouping (id INT AUTO_INCREMENT NOT NULL, item_set_id INT DEFAULT NULL, hierarchy_id INT NOT NULL, parent_grouping INT DEFAULT NULL, `label` VARCHAR(255) DEFAULT NULL, position INT NOT NULL, INDEX IDX_888D30B9960278D7 (item_set_id), INDEX IDX_888D30B9582A8328 (hierarchy_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
         $connection->exec('CREATE TABLE item_hierarchy (id INT AUTO_INCREMENT NOT NULL, `label` VARCHAR(255) NOT NULL, position INT NOT NULL, UNIQUE INDEX UNIQ_F6A03E5EEA750E8 (`label`), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
         $connection->exec('ALTER TABLE item_hierarchy_grouping ADD CONSTRAINT FK_888D30B9960278D7 FOREIGN KEY (item_set_id) REFERENCES item_set (id) ON DELETE CASCADE;');
         $connection->exec('ALTER TABLE item_hierarchy_grouping ADD CONSTRAINT FK_888D30B9582A8328 FOREIGN KEY (hierarchy_id) REFERENCES item_hierarchy (id) ON DELETE CASCADE;');
@@ -53,26 +53,34 @@ class Module extends AbstractModule
         if ($view->item->itemSets()) {
             echo '<div class="meta-group">';
             echo '<h4>' . $view->translate('Hierarchies') . '</h4>';
-            foreach ($view->item->itemSets() as $currentItemSet) {
-                $groupings = $api->search('item_hierarchy_grouping', ['item_set' => $currentItemSet->id()])->getContent();
-                $this->buildBreadcrumb($groupings, $currentItemSet);
+
+            // Get order for printing item's sets from position on Item Hierarchy page
+            $itemSetOrder = array_filter($api->search('item_hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
+            $itemSets = array_replace(array_flip($itemSetOrder), $view->item->itemSets());
+
+            foreach ($itemSets as $currentItemSet) {
+                if (is_numeric($currentItemSet)) {
+                    continue;
+                }
+                $groupings = $api->search('item_hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
+                $this->buildBreadcrumb($groupings, $currentItemSet, $view->item);
             }
             echo '</div>';
         }
     }
 
-    protected function buildBreadcrumb(array $groupings, $currentItemSet)
+    protected function buildBreadcrumb(array $groupings, $currentItemSet, $item)
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         static $printedGroupings = [];
-        $iterate = function ($groupings) use ($api, $currentItemSet, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy) {
+        $iterate = function ($groupings) use ($api, $currentItemSet, $item, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy) {
             foreach ($groupings as $key => $grouping) {
                 // Continue if grouping has already been printed
                 if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
                     continue;
                 }
 
-                if ($currentHierarchy != $grouping->getHierarchy()) {
+                if ($currentHierarchy != $grouping->getHierarchy() || $grouping->getParentGrouping() == 0) {
                     echo '<div class="value">';
                     $currentHierarchy = $grouping->getHierarchy();
                     $allGroupings = $api->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy])->getContent();
@@ -85,7 +93,7 @@ class Module extends AbstractModule
                     });
                     if (count($parentArray) > 0) {
                         $iterate($parentArray, $currentItemSet);
-                        break;
+                        continue;
                     }
                 }
 
@@ -98,8 +106,11 @@ class Module extends AbstractModule
                 }
 
                 if (!is_null($itemSet)) {
+                    foreach ($item->itemSets() as $itemItemSet) {
+                        $itemSetIDArray[] = $itemItemSet->id();
+                    }
                     // Bold groupings with current itemSet assigned
-                    if ($grouping->getItemSet()->getId() == $currentItemSet->id()) {
+                    if (in_array($grouping->getItemSet()->getId(), $itemSetIDArray)) {
                         echo "<b>" . $itemSet->link($grouping->getLabel()) . "</b>";
                     } else {
                         echo $itemSet->link($grouping->getLabel());

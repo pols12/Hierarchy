@@ -40,6 +40,11 @@ class ItemHierarchyGrouping extends AbstractEntity
      */
     protected $hierarchy;
 
+    /**
+     * @Column(type="integer")
+     */
+    protected $position;
+
     public function getId()
     {
         return $this->id;
@@ -83,5 +88,15 @@ class ItemHierarchyGrouping extends AbstractEntity
     public function getHierarchy()
     {
         return $this->hierarchy;
+    }
+
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+    public function getPosition()
+    {
+        return $this->position;
     }
 }

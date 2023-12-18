@@ -1,9 +1,7 @@
 <?php
 $translate = $this->plugin('translate');
 if ($resource->getControllerName() == 'item-set') {
-    echo '<dl><div class="property">';
-    echo '<dt>' . $translate('Hierarchies') . '</dt>';
-    $groupings = $this->api()->search('item_hierarchy_grouping', ['item_set' => $resource->id()])->getContent();
+    $groupings = $this->api()->search('item_hierarchy_grouping', ['item_set' => $resource->id(), 'sort_by' => 'position'])->getContent();
     $iterate = function ($groupings, $resource) use (&$iterate, &$allGroupings, &$currentHierarchy) {
         foreach ($groupings as $key => $grouping) {
             // Continue if all relevant groupings in hierarchy have been printed
@@ -11,7 +9,7 @@ if ($resource->getControllerName() == 'item-set') {
                 continue;
             }
 
-            if ($currentHierarchy != $grouping->getHierarchy()) {
+            if ($currentHierarchy != $grouping->getHierarchy() || $grouping->getParentGrouping() == 0) {
                 if (!is_null($currentHierarchy)) {
                     echo '</span></dd>';
                 }
@@ -64,10 +62,14 @@ if ($resource->getControllerName() == 'item-set') {
                 $iterate($childArray, $resource);
             }
         }
-        echo '</span></dd></dl>';
     };
 
-    $iterate($groupings, $resource);
+    if ($groupings) {
+        echo '<dl><div class="property">';
+        echo '<dt>' . $translate('Hierarchies') . '</dt>';
+        $iterate($groupings, $resource);
+        echo '</span></dd></dl>';
+    }
 }
 $options = [];
 if ($this->siteSetting('exclude_resources_not_in_site')) {

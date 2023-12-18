@@ -9,6 +9,10 @@ use Omeka\Stdlib\ErrorStore;
 
 class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
 {
+    protected $sortFields = [
+        'position' => 'position',
+    ];
+
     public function getEntityClass()
     {
         return 'ItemHierarchy\Entity\ItemHierarchyGrouping';
@@ -50,6 +54,12 @@ class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
                 $this->createNamedParameter($qb, $query['hierarchy']))
             );
         }
+        if (isset($query['position'])) {
+            $qb->andWhere($qb->expr()->eq(
+                'omeka_root.position',
+                $this->createNamedParameter($qb, $query['position']))
+            );
+        }
     }
 
     public function hydrate(Request $request, EntityInterface $entity,
@@ -69,6 +79,11 @@ class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
         if (isset($data['hierarchy'])) {
             $hierarchy = $this->getAdapter('item_hierarchy')->findEntity($data['hierarchy']);
             $entity->setHierarchy($hierarchy);
+        }
+        // (Re-)order groupings by their order in the input
+        static $position = 1;
+        if (isset($data['position'])) {
+            $entity->setPosition($position++);
         }
     }
 }

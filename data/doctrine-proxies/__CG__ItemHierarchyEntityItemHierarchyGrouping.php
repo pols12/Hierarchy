@@ -67,10 +67,10 @@ class ItemHierarchyGrouping extends \ItemHierarchy\Entity\ItemHierarchyGrouping 
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'parent_grouping', 'label', 'item_set', 'hierarchy'];
+            return ['__isInitialized__', 'id', 'parent_grouping', 'label', 'item_set', 'hierarchy', 'position'];
         }
 
-        return ['__isInitialized__', 'id', 'parent_grouping', 'label', 'item_set', 'hierarchy'];
+        return ['__isInitialized__', 'id', 'parent_grouping', 'label', 'item_set', 'hierarchy', 'position'];
     }
 
     /**
@@ -278,6 +278,28 @@ class ItemHierarchyGrouping extends \ItemHierarchy\Entity\ItemHierarchyGrouping 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHierarchy', []);
 
         return parent::getHierarchy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPosition($position)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPosition', [$position]);
+
+        return parent::setPosition($position);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPosition()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPosition', []);
+
+        return parent::getPosition();
     }
 
     /**
