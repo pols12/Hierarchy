@@ -41,12 +41,18 @@ class Module extends AbstractModule
         $sharedEventManager->attach(
             'Omeka\Controller\Admin\Item',
             'view.show.sidebar',
-            [$this, 'addItemHierarchies']
+            [$this, 'addAdminItemHierarchies']
+        );
+
+        $sharedEventManager->attach(
+            'Omeka\Controller\Site\Item',
+            'view.show.after',
+            [$this, 'addSiteItemHierarchies']
         );
     }
 
-    // Add relevant hierarchy breadcrumbs to item display sidebar
-    public function addItemHierarchies(Event $event)
+    // Add relevant hierarchy breadcrumbs to item admin display sidebar
+    public function addAdminItemHierarchies(Event $event)
     {
         $view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
@@ -69,6 +75,31 @@ class Module extends AbstractModule
         }
     }
 
+    // Add relevant hierarchy breadcrumbs to site item show page
+    public function addSiteItemHierarchies(Event $event)
+    {
+        $view = $event->getTarget();
+        $api = $this->getServiceLocator()->get('Omeka\ApiManager');
+        if ($view->item->itemSets()) {
+            echo '<dl class="hierarchies">';
+            echo '<div class="property">';
+            echo '<dt>' . $view->translate('Hierarchies') . '</dt>';
+
+            // Get order for printing item's sets from position on Item Hierarchy page
+            $itemSetOrder = array_filter($api->search('item_hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
+            $itemSets = array_replace(array_flip($itemSetOrder), $view->item->itemSets());
+
+            foreach ($itemSets as $currentItemSet) {
+                if (is_numeric($currentItemSet)) {
+                    continue;
+                }
+                $groupings = $api->search('item_hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
+                $this->buildBreadcrumb($groupings, $currentItemSet, $view->item);
+            }
+            echo '</div></dl>';
+        }
+    }
+
     protected function buildBreadcrumb(array $groupings, $currentItemSet, $item)
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
@@ -81,7 +112,7 @@ class Module extends AbstractModule
                 }
 
                 if ($currentHierarchy != $grouping->getHierarchy() || $grouping->getParentGrouping() == 0) {
-                    echo '<div class="value">';
+                    echo '<dd class="value">';
                     $currentHierarchy = $grouping->getHierarchy();
                     $allGroupings = $api->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy])->getContent();
                 }
@@ -134,7 +165,7 @@ class Module extends AbstractModule
                     $iterate($childArray, $currentItemSet);
                     continue;
                 }
-                echo '</div>';
+                echo '</dd>';
             }
         };
         $iterate($groupings, $currentItemSet);
