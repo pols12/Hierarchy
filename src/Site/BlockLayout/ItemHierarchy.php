@@ -41,7 +41,7 @@ class ItemHierarchy extends AbstractBlockLayout
 
 	public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
 	{	
-        $hierarchy = $view->api()->read('item_hierarchy', $block->dataValue('itemHierarchy'))->getContent();
+        $hierarchy = $view->api()->searchOne('item_hierarchy', ['id' => $block->dataValue('itemHierarchy')])->getContent();
 		if (!$hierarchy) {
             return '';
         }
