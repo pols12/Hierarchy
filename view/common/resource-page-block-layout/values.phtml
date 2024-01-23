@@ -58,7 +58,7 @@ if ($resource->getControllerName() == 'item-set') {
             });
             
             if (count($childArray) > 0) {
-                echo " => ";
+                echo " <span class=\"hierarchy-divider fas fa-caret-right\"></span> ";
                 $iterate($childArray, $resource);
             }
         }
