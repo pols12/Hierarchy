@@ -43,6 +43,6 @@ class ItemHierarchyGroupingRepresentation extends AbstractEntityRepresentation
 
     public function getPosition()
     {
-        return $this->hierarchy->getPosition();
+        return $this->resource->getPosition();
     }
 }

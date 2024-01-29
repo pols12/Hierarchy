@@ -82,7 +82,7 @@ class IndexController extends AbstractActionController
     public function updateTreeData($hierarchyData)
     {
         $hierarchyID = $hierarchyData['id'];
-        $iterate = function ($groupings) use (&$iterate, $hierarchyID, &$parentGrouping) {
+        $iterate = function ($groupings) use (&$iterate, $hierarchyID, &$parentGrouping, &$childCount) {
             foreach ($groupings as $grouping) {
                 $groupingID = $grouping['data']['groupingID'] ?: null;
                 $groupingData['item_set'] = $grouping['data']['itemSet'] ?: null;
@@ -97,9 +97,16 @@ class IndexController extends AbstractActionController
                     $response = $this->api()->create('item_hierarchy_grouping', $groupingData);
                 }
                 if (count($grouping['children']) > 0) {
+                    // Handle multidimensional hierarchies by saving/retrieving previous state
+                    $prevGrouping = $parentGrouping ?: null;
+                    $childCount = count($grouping['children']);
                     // Store ID of parent with each child
                     $parentGrouping = $response ? $response->getContent()->id() : '';
                     $iterate($grouping['children']);
+                    $parentGrouping = $prevGrouping;
+                } elseif ($childCount >= 1) {
+                    // Keep $parentGrouping the same if iterating 'sibling'
+                    continue;
                 } else {
                     $parentGrouping = '';
                 }

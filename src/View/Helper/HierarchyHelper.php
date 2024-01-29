@@ -88,7 +88,7 @@ class HierarchyHelper extends AbstractHelper
         $hierarchyID = $hierarchy->id();
         $allGroupings = $this->getView()->api()->search('item_hierarchy_grouping', ['hierarchy' => $hierarchyID, 'sort_by' => 'position'])->getContent();
 
-        $iterate = function ($groupings) use (&$iterate, &$allGroupings, &$childNode) {
+        $iterate = function ($groupings) use (&$iterate, &$allGroupings, &$childNode, &$childCount, &$prevCount) {
             $jstreeNodes = [];
             foreach ($groupings as $key => $grouping) {
                 // Skip groupings with parent unless on 'children' subarray iteration
@@ -101,6 +101,7 @@ class HierarchyHelper extends AbstractHelper
                         'label' => $grouping->getLabel() ?: '',
                         'itemSet' => $grouping->getItemSet() ? $grouping->getItemSet()->getId() : '',
                         'groupingID' => $grouping->id(),
+                        'position' => $grouping->getPosition(),
                     ],
                 ];
                 // Return any groupings with current grouping ID as parent
@@ -108,8 +109,17 @@ class HierarchyHelper extends AbstractHelper
                     return $child->getParentGrouping() == $grouping->id();
                 });
                 if (count($childArray) > 0) {
+                    // Handle multidimensional hierarchies by saving/retrieving previous state
+                    $prevNode = $childNode;
                     $childNode = true;
-                     $jstreeNodes[$key]['children'] = $iterate($childArray);
+                    $childCount = count($childArray);
+                    $childCount--;
+                    $jstreeNodes[$key]['children'] = $iterate($childArray);
+                    $childNode = $prevNode;
+                } elseif ($childCount >= 1) {
+                    // Keep $childNode the same if iterating 'sibling'
+                    $childCount--;
+                    continue;
                 } else {
                     $childNode = false;
                 }
