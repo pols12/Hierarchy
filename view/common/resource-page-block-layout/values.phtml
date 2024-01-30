@@ -5,18 +5,18 @@ if ($resource->getControllerName() == 'item-set') {
     $iterate = function ($groupings, $resource) use (&$iterate, &$allGroupings, &$currentHierarchy) {
         foreach ($groupings as $key => $grouping) {
             // Continue if all relevant groupings in hierarchy have been printed
-            if (isset($allGroupings) && count($allGroupings) == 0) {
+            if ($currentHierarchy == $grouping->getHierarchy() & isset($allGroupings) && count($allGroupings) == 0) {
                 continue;
             }
 
-            if ($currentHierarchy != $grouping->getHierarchy() || $grouping->getParentGrouping() == 0) {
+            if ($currentHierarchy != $grouping->getHierarchy()) {
                 if (!is_null($currentHierarchy)) {
                     echo '</span></dd>';
                 }
                 echo '<dd class="value">';
                 echo '<span class="value-content">';
                 $currentHierarchy = $grouping->getHierarchy();
-                $allGroupings = $this->api()->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy])->getContent();
+                $allGroupings = $this->api()->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
             }
 
             if ($grouping->getParentGrouping() != 0) {

@@ -111,7 +111,7 @@ class Module extends AbstractModule
                     continue;
                 }
 
-                if ($currentHierarchy != $grouping->getHierarchy() || $grouping->getParentGrouping() == 0) {
+                if ($currentHierarchy != $grouping->getHierarchy()) {
                     echo '<dd class="value">';
                     $currentHierarchy = $grouping->getHierarchy();
                     $allGroupings = $api->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy])->getContent();
