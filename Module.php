@@ -161,7 +161,7 @@ class Module extends AbstractModule
                 $printedGroupings[] = $grouping;
 
                 if (count($childArray) > 0) {
-                    echo " => ";
+                    echo " <span class=\"hierarchy-divider fas fa-caret-right\"></span> ";
                     $iterate($childArray, $currentItemSet);
                     continue;
                 }
