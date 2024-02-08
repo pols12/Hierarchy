@@ -104,7 +104,9 @@ class Module extends AbstractModule
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         static $printedGroupings = [];
-        $iterate = function ($groupings) use ($api, $currentItemSet, $item, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy) {
+        static $itemSetCounter = 0;
+        $itemSetCounter++;
+        $iterate = function ($groupings) use ($api, $currentItemSet, $item, &$itemSetCounter, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
             foreach ($groupings as $key => $grouping) {
                 // Continue if grouping has already been printed
                 if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -112,9 +114,13 @@ class Module extends AbstractModule
                 }
 
                 if ($currentHierarchy != $grouping->getHierarchy()) {
-                    echo '<dd class="value">';
+                    // Close HTML list and value if previoius hierarchy or itemSet iteration
+                    if (isset($currentHierarchy) || $itemSetCounter > 1) {
+                        echo '</ul></dd>';
+                    }
+                    echo '<dd class="value"><ul>';
                     $currentHierarchy = $grouping->getHierarchy();
-                    $allGroupings = $api->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy])->getContent();
+                    $allGroupings = $api->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                 }
 
                 if ($grouping->getParentGrouping() != 0) {
@@ -133,7 +139,7 @@ class Module extends AbstractModule
                 } catch (\Exception $e) {
                     // Print groupings without assigned itemSet
                     $itemSet = null;
-                    echo $grouping->getLabel();
+                    echo '<li>' . $grouping->getLabel() . '</li>';
                 }
 
                 if (!is_null($itemSet)) {
@@ -142,9 +148,9 @@ class Module extends AbstractModule
                     }
                     // Bold groupings with current itemSet assigned
                     if (in_array($grouping->getItemSet()->getId(), $itemSetIDArray)) {
-                        echo "<b>" . $itemSet->link($grouping->getLabel()) . "</b>";
+                        echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b></li>';
                     } else {
-                        echo $itemSet->link($grouping->getLabel());
+                        echo '<li>' . $itemSet->link($grouping->getLabel()) . '</li>';
                     }
                 }
 
@@ -161,11 +167,19 @@ class Module extends AbstractModule
                 $printedGroupings[] = $grouping;
 
                 if (count($childArray) > 0) {
-                    echo " <span class=\"hierarchy-divider fas fa-caret-right\"></span> ";
+                    // Handle multidimensional hierarchies by saving/retrieving previous state
+                    $prevChildArray = $childArray ?: [];
+                    $childCount = count($childArray);
+                    echo '<ul>';
                     $iterate($childArray, $currentItemSet);
+                    echo '</ul>';
+                    $childArray = $prevChildArray;
+                    continue;
+                } elseif ($childCount >= 1) {
+                    // Keep other variables the same if iterating 'sibling'
+                    $childCount--;
                     continue;
                 }
-                echo '</dd>';
             }
         };
         $iterate($groupings, $currentItemSet);
