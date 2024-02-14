@@ -10,6 +10,7 @@ use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\Form\Fieldset;
 use Laminas\Mvc\MvcEvent;
 use Laminas\EventManager\Event;
+use ItemHierarchy\Form\ConfigForm;
 
 class Module extends AbstractModule
 {
@@ -51,7 +52,28 @@ class Module extends AbstractModule
         );
     }
 
-    // Add relevant hierarchy breadcrumbs to item admin display sidebar
+    /**
+     * Get this module's configuration form.
+     *
+     * @param ViewModel $view
+     * @return string
+     */
+    public function getConfigForm(PhpRenderer $renderer)
+    {
+        $formElementManager = $this->getServiceLocator()->get('FormElementManager');
+        $form = $formElementManager->get(ConfigForm::class);
+        $html = $renderer->formCollection($form, false);
+        return $html;
+    }
+
+    public function handleConfigForm(AbstractController $controller)
+    {
+        $params = $controller->params()->fromPost();
+        $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
+        $globalSettings->set('hierarchy_show_all_groupings', $params['hierarchy_show_all_groupings']);
+    }
+
+    // Add relevant hierarchy nested lists to item admin display sidebar
     public function addAdminItemHierarchies(Event $event)
     {
         $view = $event->getTarget();
@@ -69,13 +91,13 @@ class Module extends AbstractModule
                     continue;
                 }
                 $groupings = $api->search('item_hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
-                $this->buildBreadcrumb($groupings, $currentItemSet, $view->item);
+                $this->buildNestedList($groupings, $currentItemSet, $view->item);
             }
             echo '</div>';
         }
     }
 
-    // Add relevant hierarchy breadcrumbs to site item show page
+    // Add relevant hierarchy nested lists to site item show page
     public function addSiteItemHierarchies(Event $event)
     {
         $view = $event->getTarget();
@@ -94,19 +116,20 @@ class Module extends AbstractModule
                     continue;
                 }
                 $groupings = $api->search('item_hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
-                $this->buildBreadcrumb($groupings, $currentItemSet, $view->item);
+                $this->buildNestedList($groupings, $currentItemSet, $view->item);
             }
             echo '</div></dl>';
         }
     }
 
-    protected function buildBreadcrumb(array $groupings, $currentItemSet, $item)
+    protected function buildNestedList(array $groupings, $currentItemSet, $item)
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
+        $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
         static $printedGroupings = [];
         static $itemSetCounter = 0;
         $itemSetCounter++;
-        $iterate = function ($groupings) use ($api, $currentItemSet, $item, &$itemSetCounter, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
+        $iterate = function ($groupings) use ($api, $globalSettings, $currentItemSet, $item, &$itemSetCounter, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
             foreach ($groupings as $key => $grouping) {
                 // Continue if grouping has already been printed
                 if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -121,6 +144,11 @@ class Module extends AbstractModule
                     echo '<dd class="value"><ul>';
                     $currentHierarchy = $grouping->getHierarchy();
                     $allGroupings = $api->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
+                    // If hierarchy_show_all_groupings checked in config, iterate through all groupings
+                    if ($globalSettings->get('hierarchy_show_all_groupings')) {
+                        $iterate($allGroupings, $currentItemSet);
+                        continue;
+                    }
                 }
 
                 if ($grouping->getParentGrouping() != 0) {

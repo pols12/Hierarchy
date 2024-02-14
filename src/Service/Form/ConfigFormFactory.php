@@ -1,4 +1,5 @@
 <?php
+
 namespace ItemHierarchy\Service\Form;
 
 use ItemHierarchy\Form\ConfigForm;
@@ -9,7 +10,10 @@ class ConfigFormFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $form = new ConfigForm;
+        $form = new ConfigForm();
+        $globalSettings = $container->get('Omeka\Settings');
+        $form->setGlobalSettings($globalSettings);
+
         return $form;
     }
 }

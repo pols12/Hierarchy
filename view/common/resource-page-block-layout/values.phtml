@@ -16,6 +16,11 @@ if ($resource->getControllerName() == 'item-set') {
                 echo '<dd class="value"><span class="value-content"><ul>';
                 $currentHierarchy = $grouping->getHierarchy();
                 $allGroupings = $this->api()->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
+                // If hierarchy_show_all_groupings checked in config, iterate through all groupings
+                if ($this->setting('hierarchy_show_all_groupings')) {
+                    $iterate($allGroupings, $resource);
+                    continue;
+                }
             }
 
             if ($grouping->getParentGrouping() != 0) {
