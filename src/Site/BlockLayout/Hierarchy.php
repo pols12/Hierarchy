@@ -1,5 +1,5 @@
 <?php
-namespace ItemHierarchy\Site\BlockLayout;
+namespace Hierarchy\Site\BlockLayout;
 
 use Omeka\Api\Representation\SiteRepresentation;
 use Omeka\Api\Representation\SitePageRepresentation;
@@ -10,26 +10,26 @@ use Laminas\Form\Form;
 use Laminas\Form\Element\Select;
 use Laminas\View\Renderer\PhpRenderer;
 
-class ItemHierarchy extends AbstractBlockLayout
+class Hierarchy extends AbstractBlockLayout
 {
 
 	public function getLabel() {
-		return 'Item Hierarchy'; // @translate
+		return 'Hierarchy'; // @translate
 	}
 
 	public function form(PhpRenderer $view, SiteRepresentation $site,
         SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
     ) {
-        $hierarchies = $view->api()->search('item_hierarchy', ['sort_by' => 'position'])->getContent();
+        $hierarchies = $view->api()->search('hierarchy', ['sort_by' => 'position'])->getContent();
 		
 		$options = [];
 		foreach ($hierarchies as $hierarchy) {
             $options[$hierarchy->id()] = $hierarchy->getLabel();
         }
 
-        $setHierarchy = $block ? $block->dataValue('itemHierarchy') : '';
+        $setHierarchy = $block ? $block->dataValue('Hierarchy') : '';
 
-        $select = new Select('o:block[__blockIndex__][o:data][itemHierarchy]');
+        $select = new Select('o:block[__blockIndex__][o:data][Hierarchy]');
         $select->setValueOptions($options)->setValue($setHierarchy);
 
         $html = '<div class="field">';
@@ -41,14 +41,14 @@ class ItemHierarchy extends AbstractBlockLayout
 
 	public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
 	{	
-        $hierarchy = $view->api()->searchOne('item_hierarchy', ['id' => $block->dataValue('itemHierarchy')])->getContent();
+        $hierarchy = $view->api()->searchOne('hierarchy', ['id' => $block->dataValue('Hierarchy')])->getContent();
 		if (!$hierarchy) {
             return '';
         }
 
 		$hierarchyData = $view->hierarchyHelper()->toJstree($hierarchy);
 
-        return $view->partial('item-hierarchy/common/block-layout/hierarchy-public', [
+        return $view->partial('hierarchy/common/block-layout/hierarchy-public', [
             'hierarchyData' => $hierarchyData,
         ]);
 	}

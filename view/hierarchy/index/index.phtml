@@ -3,12 +3,12 @@ $this->headScript()->appendFile($this->assetUrl('vendor/jstree/jstree.min.js', '
 $this->headScript()->appendFile($this->assetUrl('js/jstree-plugins.js', 'Omeka'));
 $this->headScript()->appendFile($this->assetUrl('vendor/sortablejs/Sortable.min.js', 'Omeka'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/jstree.css', 'Omeka'));
-$this->headScript()->appendFile($this->assetUrl('js/item-hierarchy.js', 'ItemHierarchy'));
+$this->headScript()->appendFile($this->assetUrl('js/hierarchy.js', 'Hierarchy'));
 $escapeHtml = $this->plugin('escapeHtml');
 $translate = $this->plugin('translate');
 $form->prepare();
 ?>
-<?php echo $this->pageTitle($translate('Item Hierarchy')); ?>
+<?php echo $this->pageTitle($translate('Hierarchy')); ?>
 <?php echo $this->form()->openTag($form); ?>
 <div id="page-actions">
     <button><?php echo $escapeHtml($this->translate('Save')); ?></button>

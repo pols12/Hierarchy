@@ -1,12 +1,12 @@
 <?php
-namespace ItemHierarchy\Entity;
+namespace Hierarchy\Entity;
 
 use Omeka\Entity\AbstractEntity;
 
 /**
  * @Entity
  */
-class ItemHierarchy extends AbstractEntity
+class Hierarchy extends AbstractEntity
 {
     /**
      * @Id

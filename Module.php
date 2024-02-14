@@ -1,5 +1,5 @@
 <?php
-namespace ItemHierarchy;
+namespace Hierarchy;
 
 use Omeka\Module\AbstractModule;
 use Omeka\Entity\Item;
@@ -10,7 +10,7 @@ use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\Form\Fieldset;
 use Laminas\Mvc\MvcEvent;
 use Laminas\EventManager\Event;
-use ItemHierarchy\Form\ConfigForm;
+use Hierarchy\Form\ConfigForm;
 
 class Module extends AbstractModule
 {
@@ -22,19 +22,19 @@ class Module extends AbstractModule
     public function install(ServiceLocatorInterface $serviceLocator)
     {
         $connection = $serviceLocator->get('Omeka\Connection');
-        $connection->exec('CREATE TABLE item_hierarchy_grouping (id INT AUTO_INCREMENT NOT NULL, item_set_id INT DEFAULT NULL, hierarchy_id INT NOT NULL, parent_grouping INT DEFAULT NULL, `label` VARCHAR(255) DEFAULT NULL, position INT NOT NULL, INDEX IDX_888D30B9960278D7 (item_set_id), INDEX IDX_888D30B9582A8328 (hierarchy_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
-        $connection->exec('CREATE TABLE item_hierarchy (id INT AUTO_INCREMENT NOT NULL, `label` VARCHAR(255) NOT NULL, position INT NOT NULL, UNIQUE INDEX UNIQ_F6A03E5EEA750E8 (`label`), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
-        $connection->exec('ALTER TABLE item_hierarchy_grouping ADD CONSTRAINT FK_888D30B9960278D7 FOREIGN KEY (item_set_id) REFERENCES item_set (id) ON DELETE CASCADE;');
-        $connection->exec('ALTER TABLE item_hierarchy_grouping ADD CONSTRAINT FK_888D30B9582A8328 FOREIGN KEY (hierarchy_id) REFERENCES item_hierarchy (id) ON DELETE CASCADE;');
+        $connection->exec('CREATE TABLE hierarchy_grouping (id INT AUTO_INCREMENT NOT NULL, item_set_id INT DEFAULT NULL, hierarchy_id INT NOT NULL, parent_grouping INT DEFAULT NULL, `label` VARCHAR(255) DEFAULT NULL, position INT NOT NULL, INDEX IDX_DCDE57FF960278D7 (item_set_id), INDEX IDX_DCDE57FF582A8328 (hierarchy_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
+        $connection->exec('CREATE TABLE hierarchy (id INT AUTO_INCREMENT NOT NULL, `label` VARCHAR(255) NOT NULL, position INT NOT NULL, UNIQUE INDEX UNIQ_FA7A28AEEA750E8 (`label`), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
+        $connection->exec('ALTER TABLE hierarchy_grouping ADD CONSTRAINT FK_DCDE57FF960278D7 FOREIGN KEY (item_set_id) REFERENCES item_set (id) ON DELETE CASCADE;');
+        $connection->exec('ALTER TABLE hierarchy_grouping ADD CONSTRAINT FK_DCDE57FF582A8328 FOREIGN KEY (hierarchy_id) REFERENCES hierarchy (id) ON DELETE CASCADE;');
     }
     
     public function uninstall(ServiceLocatorInterface $serviceLocator)
     {
-        $connection = $serviceLocator->get('Omeka\Connection');
-        $connection->exec('ALTER TABLE item_hierarchy_grouping DROP FOREIGN KEY FK_888D30B9960278D7');
-        $connection->exec('ALTER TABLE item_hierarchy_grouping DROP FOREIGN KEY FK_888D30B9582A8328');
-        $connection->exec('DROP TABLE item_hierarchy');
-        $connection->exec('DROP TABLE item_hierarchy_grouping');
+        // $connection = $serviceLocator->get('Omeka\Connection');
+        // $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9960278D7');
+        // $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9582A8328');
+        // $connection->exec('DROP TABLE hierarchy');
+        // $connection->exec('DROP TABLE hierarchy_grouping');
     }
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
@@ -42,13 +42,13 @@ class Module extends AbstractModule
         $sharedEventManager->attach(
             'Omeka\Controller\Admin\Item',
             'view.show.sidebar',
-            [$this, 'addAdminItemHierarchies']
+            [$this, 'addAdminHierarchies']
         );
 
         $sharedEventManager->attach(
             'Omeka\Controller\Site\Item',
             'view.show.after',
-            [$this, 'addSiteItemHierarchies']
+            [$this, 'addSiteHierarchies']
         );
     }
 
@@ -74,7 +74,7 @@ class Module extends AbstractModule
     }
 
     // Add relevant hierarchy nested lists to item admin display sidebar
-    public function addAdminItemHierarchies(Event $event)
+    public function addAdminHierarchies(Event $event)
     {
         $view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
@@ -82,15 +82,15 @@ class Module extends AbstractModule
             echo '<div class="meta-group">';
             echo '<h4>' . $view->translate('Hierarchies') . '</h4>';
 
-            // Get order for printing item's sets from position on Item Hierarchy page
-            $itemSetOrder = array_filter($api->search('item_hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
+            // Get order for printing item's sets from position on hierarchy page
+            $itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
             $itemSets = array_replace(array_flip($itemSetOrder), $view->item->itemSets());
 
             foreach ($itemSets as $currentItemSet) {
                 if (is_numeric($currentItemSet)) {
                     continue;
                 }
-                $groupings = $api->search('item_hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
+                $groupings = $api->search('hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
                 $this->buildNestedList($groupings, $currentItemSet, $view->item);
             }
             echo '</div>';
@@ -98,7 +98,7 @@ class Module extends AbstractModule
     }
 
     // Add relevant hierarchy nested lists to site item show page
-    public function addSiteItemHierarchies(Event $event)
+    public function addSiteHierarchies(Event $event)
     {
         $view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
@@ -107,15 +107,15 @@ class Module extends AbstractModule
             echo '<div class="property">';
             echo '<dt>' . $view->translate('Hierarchies') . '</dt>';
 
-            // Get order for printing item's sets from position on Item Hierarchy page
-            $itemSetOrder = array_filter($api->search('item_hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
+            // Get order for printing item's sets from position on Hierarchy page
+            $itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
             $itemSets = array_replace(array_flip($itemSetOrder), $view->item->itemSets());
 
             foreach ($itemSets as $currentItemSet) {
                 if (is_numeric($currentItemSet)) {
                     continue;
                 }
-                $groupings = $api->search('item_hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
+                $groupings = $api->search('hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
                 $this->buildNestedList($groupings, $currentItemSet, $view->item);
             }
             echo '</div></dl>';
@@ -143,7 +143,7 @@ class Module extends AbstractModule
                     }
                     echo '<dd class="value"><ul>';
                     $currentHierarchy = $grouping->getHierarchy();
-                    $allGroupings = $api->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
+                    $allGroupings = $api->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                     // If hierarchy_show_all_groupings checked in config, iterate through all groupings
                     if ($globalSettings->get('hierarchy_show_all_groupings')) {
                         $iterate($allGroupings, $currentItemSet);

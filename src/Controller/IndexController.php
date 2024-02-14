@@ -1,7 +1,7 @@
 <?php
-namespace ItemHierarchy\Controller;
+namespace Hierarchy\Controller;
 
-use ItemHierarchy\Form\ConfigForm;
+use Hierarchy\Form\ConfigForm;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Model\ViewModel;
@@ -31,24 +31,24 @@ class IndexController extends AbstractActionController
                     foreach($formData['hierarchy'] as $hierarchyData) {
                         // Check if hierarchy already exists before adding/removing/updating
                         $hierarchyID = $hierarchyData['id'] ?: 0;
-                        $content = $this->api()->searchOne('item_hierarchy', ['id' => $hierarchyID])->getContent();
+                        $content = $this->api()->searchOne('hierarchy', ['id' => $hierarchyID])->getContent();
                         if (!empty($hierarchyData['delete'])) {
                             if (!empty($content)) {
-                                $response = $this->api($form)->delete('item_hierarchy', $hierarchyData['id']);
+                                $response = $this->api($form)->delete('hierarchy', $hierarchyData['id']);
                             } else {
                                 continue;
                             }
                         } else if (empty($content)) {
-                            $hierarchyResponse = $this->api($form)->create('item_hierarchy', $hierarchyData);
+                            $hierarchyResponse = $this->api($form)->create('hierarchy', $hierarchyData);
                             $hierarchyData['id'] = $hierarchyResponse ? $hierarchyResponse->getContent()->id() : '';
                             $response = $this->updateTreeData($hierarchyData);
                         } else {
-                            $hierarchyResponse = $this->api($form)->update('item_hierarchy', $hierarchyID, $hierarchyData);
+                            $hierarchyResponse = $this->api($form)->update('hierarchy', $hierarchyID, $hierarchyData);
                             $response = $this->updateTreeData($hierarchyData);
                         }
                     }
                     if ($response) {
-                        $this->messenger()->addSuccess('Item Hierarchy successfully updated'); // @translate
+                        $this->messenger()->addSuccess('Hierarchy successfully updated'); // @translate
                         return $this->redirect()->refresh();
                     }
                 } else {
@@ -92,9 +92,9 @@ class IndexController extends AbstractActionController
                 $groupingData['position'] = $grouping['data']['position'] ?: '';
                 if ($groupingID) {
                     // Update existing grouping metadata
-                    $response = $this->api()->update('item_hierarchy_grouping', $groupingID, $groupingData);
+                    $response = $this->api()->update('hierarchy_grouping', $groupingID, $groupingData);
                 } else {
-                    $response = $this->api()->create('item_hierarchy_grouping', $groupingData);
+                    $response = $this->api()->create('hierarchy_grouping', $groupingData);
                 }
                 if (count($grouping['children']) > 0) {
                     // Handle multidimensional hierarchies by saving/retrieving previous state

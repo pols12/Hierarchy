@@ -1,5 +1,5 @@
 <?php
-namespace ItemHierarchy\Api\Adapter;
+namespace Hierarchy\Api\Adapter;
 
 use Doctrine\ORM\QueryBuilder;
 use Omeka\Api\Adapter\AbstractEntityAdapter;
@@ -7,7 +7,7 @@ use Omeka\Api\Request;
 use Omeka\Entity\EntityInterface;
 use Omeka\Stdlib\ErrorStore;
 
-class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
+class HierarchyGroupingAdapter extends AbstractEntityAdapter
 {
     protected $sortFields = [
         'position' => 'position',
@@ -15,17 +15,17 @@ class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
 
     public function getEntityClass()
     {
-        return 'ItemHierarchy\Entity\ItemHierarchyGrouping';
+        return 'Hierarchy\Entity\HierarchyGrouping';
     }
 
     public function getResourceName()
     {
-        return 'item_hierarchy_grouping';
+        return 'hierarchy_grouping';
     }
 
     public function getRepresentationClass()
     {
-        return 'ItemHierarchy\Api\Representation\ItemHierarchyGroupingRepresentation';
+        return 'Hierarchy\Api\Representation\HierarchyGroupingRepresentation';
     }
 
     public function buildQuery(QueryBuilder $qb, array $query)
@@ -77,7 +77,7 @@ class ItemHierarchyGroupingAdapter extends AbstractEntityAdapter
             $entity->setLabel($data['label']);
         }
         if (isset($data['hierarchy'])) {
-            $hierarchy = $this->getAdapter('item_hierarchy')->findEntity($data['hierarchy']);
+            $hierarchy = $this->getAdapter('hierarchy')->findEntity($data['hierarchy']);
             $entity->setHierarchy($hierarchy);
         }
         // (Re-)order groupings by their order in the input

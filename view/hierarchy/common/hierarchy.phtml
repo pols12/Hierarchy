@@ -19,7 +19,7 @@ $escape = $this->plugin('escapeHtml');
         <?php echo $hierarchyContent; ?>
         <button type="button" class="grouping-add"><?php echo $translate('Add grouping'); ?></button>
         <div id="nav-tree"
-            data-link-form-url="<?php echo $escape($this->url('admin/item-hierarchy/action', ['action' => 'grouping-form'], true)); ?>"
+            data-link-form-url="<?php echo $escape($this->url('admin/hierarchy/action', ['action' => 'grouping-form'], true)); ?>"
             data-jstree-data="<?php echo $escape(json_encode($jsTreeData)); ?>"></div>
     </div>
 </div>

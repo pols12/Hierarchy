@@ -1,5 +1,5 @@
 <?php
-namespace ItemHierarchy\View\Helper;
+namespace Hierarchy\View\Helper;
 
 use Laminas\Form\View\Helper\AbstractHelper;
 use Omeka\Form\Element as OmekaElement;
@@ -14,7 +14,7 @@ class HierarchyHelper extends AbstractHelper
      */
     public function hierarchyFormElements($form)
     {
-        $hierarchies = $this->getView()->api()->search('item_hierarchy', ['sort_by' => 'position'])->getContent();
+        $hierarchies = $this->getView()->api()->search('hierarchy', ['sort_by' => 'position'])->getContent();
 
         $html = '<div id="hierarchies">';
         foreach ($hierarchies as $hierarchy) {
@@ -26,7 +26,7 @@ class HierarchyHelper extends AbstractHelper
 
     public function hierarchyFormElement($form, $hierarchy = null) {
         $view = $this->getView();
-        return $view->partial('item-hierarchy/common/hierarchy', [
+        return $view->partial('hierarchy/common/hierarchy', [
             'label' => $hierarchy ? $hierarchy->getLabel() : null,
             'jsTreeData' => $hierarchy ? $this->toJstree($hierarchy) : '',
             'hierarchyContent' => $this->formElement($form, $hierarchy),
@@ -86,7 +86,7 @@ class HierarchyHelper extends AbstractHelper
     public function toJstree($hierarchy)
     {
         $hierarchyID = $hierarchy->id();
-        $allGroupings = $this->getView()->api()->search('item_hierarchy_grouping', ['hierarchy' => $hierarchyID, 'sort_by' => 'position'])->getContent();
+        $allGroupings = $this->getView()->api()->search('hierarchy_grouping', ['hierarchy' => $hierarchyID, 'sort_by' => 'position'])->getContent();
 
         $iterate = function ($groupings) use (&$iterate, &$allGroupings, &$childNode, &$childCount, &$prevCount) {
             $jstreeNodes = [];

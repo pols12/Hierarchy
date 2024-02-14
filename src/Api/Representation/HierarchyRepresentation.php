@@ -1,22 +1,22 @@
 <?php
-namespace ItemHierarchy\Api\Representation;
+namespace Hierarchy\Api\Representation;
 
 use Omeka\Api\Representation\AbstractEntityRepresentation;
-use ItemHierarchy\Entity\ItemHierarchy;
+use Hierarchy\Entity\Hierarchy;
 
-class ItemHierarchyRepresentation extends AbstractEntityRepresentation
+class HierarchyRepresentation extends AbstractEntityRepresentation
 {
     /**
-     * @var ItemHierarchy
+     * @var Hierarchy
      */
     protected $hierarchy;
 
     /**
      * Construct the hierarchy object.
      *
-     * @param ItemHierarchy $hierarchy
+     * @param Hierarchy $hierarchy
      */
-    public function __construct(ItemHierarchy $hierarchy)
+    public function __construct(Hierarchy $hierarchy)
     {
         $this->hierarchy = $hierarchy;
     }
@@ -32,7 +32,7 @@ class ItemHierarchyRepresentation extends AbstractEntityRepresentation
 
     public function getJsonLdType()
     {
-        return 'o:ItemHierarchy';
+        return 'o:Hierarchy';
     }
 
     public function id()

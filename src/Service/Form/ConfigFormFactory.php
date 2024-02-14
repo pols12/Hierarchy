@@ -1,8 +1,8 @@
 <?php
 
-namespace ItemHierarchy\Service\Form;
+namespace Hierarchy\Service\Form;
 
-use ItemHierarchy\Form\ConfigForm;
+use Hierarchy\Form\ConfigForm;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
 

@@ -4,7 +4,7 @@ return [
         'translation_file_patterns' => [
             [
                 'type' => 'gettext',
-                'base_dir' => OMEKA_PATH . '/modules/ItemHierarchy/language',
+                'base_dir' => OMEKA_PATH . '/modules/Hierarchy/language',
                 'pattern' => '%s.mo',
                 'text_domain' => null,
             ],
@@ -12,53 +12,53 @@ return [
     ],
     'api_adapters' => [
         'invokables' => [
-            'item_hierarchy' => 'ItemHierarchy\Api\Adapter\ItemHierarchyAdapter',
-            'item_hierarchy_grouping' => 'ItemHierarchy\Api\Adapter\ItemHierarchyGroupingAdapter',
+            'hierarchy' => 'Hierarchy\Api\Adapter\HierarchyAdapter',
+            'hierarchy_grouping' => 'Hierarchy\Api\Adapter\HierarchyGroupingAdapter',
         ],
     ],
     'controllers' => [
         'invokables' => [
-            'ItemHierarchy\Controller\Index' => 'ItemHierarchy\Controller\IndexController',
+            'Hierarchy\Controller\Index' => 'Hierarchy\Controller\IndexController',
         ],
     ],
     'view_manager' => [
         'template_path_stack' => [
-            OMEKA_PATH . '/modules/ItemHierarchy/view',
+            OMEKA_PATH . '/modules/Hierarchy/view',
         ],
     ],
     'block_layouts' => [
         'invokables' => [
-            'itemHierarchy' => ItemHierarchy\Site\BlockLayout\ItemHierarchy::class,
+            'Hierarchy' => Hierarchy\Site\BlockLayout\Hierarchy::class,
         ],
     ],
     'view_helpers' => [
         'invokables' => [
-            'hierarchyHelper' => ItemHierarchy\View\Helper\HierarchyHelper::class,
+            'hierarchyHelper' => Hierarchy\View\Helper\HierarchyHelper::class,
         ],
     ],
     'entity_manager' => [
         'mapping_classes_paths' => [
-            OMEKA_PATH . '/modules/ItemHierarchy/src/Entity',
+            OMEKA_PATH . '/modules/Hierarchy/src/Entity',
         ],
         'proxy_paths' => [
-            OMEKA_PATH . '/modules/ItemHierarchy/data/doctrine-proxies',
+            OMEKA_PATH . '/modules/Hierarchy/data/doctrine-proxies',
         ],
     ],
     'form_elements' => [
         'factories' => [
-            'ItemHierarchy\Form\ConfigForm' => 'ItemHierarchy\Service\Form\ConfigFormFactory',
+            'Hierarchy\Form\ConfigForm' => 'Hierarchy\Service\Form\ConfigFormFactory',
         ],
     ],
     'router' => [
         'routes' => [
             'admin' => [
                 'child_routes' => [
-                    'item-hierarchy' => [
+                    'hierarchy' => [
                         'type' => 'Literal',
                         'options' => [
-                            'route' => '/item-hierarchy',
+                            'route' => '/hierarchy',
                             'defaults' => [
-                                '__NAMESPACE__' => 'ItemHierarchy\Controller',
+                                '__NAMESPACE__' => 'Hierarchy\Controller',
                                 'controller' => 'Index',
                                 'action' => 'index',
                             ],
@@ -83,9 +83,9 @@ return [
     'navigation' => [
         'AdminModule' => [
             [
-                'label' => 'Item Hierarchy', // @translate
-                'route' => 'admin/item-hierarchy',
-                'resource' => 'ItemHierarchy\Controller\Index',
+                'label' => 'Hierarchy', // @translate
+                'route' => 'admin/hierarchy',
+                'resource' => 'Hierarchy\Controller\Index',
             ],
         ],
     ],

@@ -1,14 +1,14 @@
 <?php
-namespace ItemHierarchy\Entity;
+namespace Hierarchy\Entity;
 
 use Omeka\Entity\AbstractEntity;
 use Omeka\Entity\ItemSet;
-use ItemHierarchy\Entity\ItemHierarchyBlock;
+use Hierarchy\Entity\HierarchyBlock;
 
 /**
  * @Entity
  */
-class ItemHierarchyGrouping extends AbstractEntity
+class HierarchyGrouping extends AbstractEntity
 {
     /**
      * @Id
@@ -35,7 +35,7 @@ class ItemHierarchyGrouping extends AbstractEntity
     protected $item_set;
 
     /**
-     * @ManyToOne(targetEntity="ItemHierarchy\Entity\ItemHierarchy")
+     * @ManyToOne(targetEntity="Hierarchy\Entity\Hierarchy")
      * @JoinColumn(nullable=false, onDelete="CASCADE")
      */
     protected $hierarchy;
@@ -80,7 +80,7 @@ class ItemHierarchyGrouping extends AbstractEntity
         return $this->item_set;
     }
 
-    public function setHierarchy(ItemHierarchy $hierarchy)
+    public function setHierarchy(Hierarchy $hierarchy)
     {
         $this->hierarchy = $hierarchy;
     }

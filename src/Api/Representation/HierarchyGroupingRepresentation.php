@@ -1,9 +1,9 @@
 <?php
-namespace ItemHierarchy\Api\Representation;
+namespace Hierarchy\Api\Representation;
 
 use Omeka\Api\Representation\AbstractEntityRepresentation;
 
-class ItemHierarchyGroupingRepresentation extends AbstractEntityRepresentation
+class HierarchyGroupingRepresentation extends AbstractEntityRepresentation
 {
     public function getJsonLd()
     {
@@ -18,7 +18,7 @@ class ItemHierarchyGroupingRepresentation extends AbstractEntityRepresentation
 
     public function getJsonLdType()
     {
-        return 'o:ItemHierarchyGrouping';
+        return 'o:HierarchyGrouping';
     }
 
     public function getParentGrouping()

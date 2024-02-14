@@ -1,5 +1,5 @@
 <?php
-namespace ItemHierarchy\Form;
+namespace Hierarchy\Form;
 
 use Laminas\Form\Form;
 

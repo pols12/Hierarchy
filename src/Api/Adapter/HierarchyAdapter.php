@@ -1,12 +1,12 @@
 <?php
-namespace ItemHierarchy\Api\Adapter;
+namespace Hierarchy\Api\Adapter;
 
 use Omeka\Api\Adapter\AbstractEntityAdapter;
 use Omeka\Api\Request;
 use Omeka\Entity\EntityInterface;
 use Omeka\Stdlib\ErrorStore;
 
-class ItemHierarchyAdapter extends AbstractEntityAdapter
+class HierarchyAdapter extends AbstractEntityAdapter
 {
     protected $sortFields = [
         'position' => 'position',
@@ -14,17 +14,17 @@ class ItemHierarchyAdapter extends AbstractEntityAdapter
 
     public function getEntityClass()
     {
-        return 'ItemHierarchy\Entity\ItemHierarchy';
+        return 'Hierarchy\Entity\Hierarchy';
     }
 
     public function getResourceName()
     {
-        return 'item_hierarchy';
+        return 'hierarchy';
     }
 
     public function getRepresentationClass()
     {
-        return 'ItemHierarchy\Api\Representation\ItemHierarchyRepresentation';
+        return 'Hierarchy\Api\Representation\HierarchyRepresentation';
     }
 
     public function hydrate(Request $request, EntityInterface $entity,

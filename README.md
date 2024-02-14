@@ -1,4 +1,4 @@
-# Item Hierarchy
+# Hierarchy
 
 Create hierarchies of resources for organization and display. Each hierarchy can contain multiple nested groupings, and each grouping may optionally contain objects from a selected item set.
 
@@ -10,7 +10,7 @@ See general end user documentation for [Installing a module](http://omeka.org/s/
 
 # Copyright
 
-ItemHierarchy is Copyright © 2019-present Corporation for Digital Scholarship, Vienna, Virginia, USA http://digitalscholar.org
+Hierarchy is Copyright © 2019-present Corporation for Digital Scholarship, Vienna, Virginia, USA http://digitalscholar.org
 
 The Corporation for Digital Scholarship distributes the Omeka source code
 under the GNU General Public License, version 3 (GPLv3). The full text

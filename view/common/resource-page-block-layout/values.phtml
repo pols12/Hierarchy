@@ -1,7 +1,7 @@
 <?php
 $translate = $this->plugin('translate');
 if ($resource->getControllerName() == 'item-set') {
-    $groupings = $this->api()->search('item_hierarchy_grouping', ['item_set' => $resource->id(), 'sort_by' => 'position'])->getContent();
+    $groupings = $this->api()->search('hierarchy_grouping', ['item_set' => $resource->id(), 'sort_by' => 'position'])->getContent();
     $iterate = function ($groupings, $resource) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
         foreach ($groupings as $key => $grouping) {
             // Continue if grouping has already been printed
@@ -15,7 +15,7 @@ if ($resource->getControllerName() == 'item-set') {
                 }
                 echo '<dd class="value"><span class="value-content"><ul>';
                 $currentHierarchy = $grouping->getHierarchy();
-                $allGroupings = $this->api()->search('item_hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
+                $allGroupings = $this->api()->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                 // If hierarchy_show_all_groupings checked in config, iterate through all groupings
                 if ($this->setting('hierarchy_show_all_groupings')) {
                     $iterate($allGroupings, $resource);
