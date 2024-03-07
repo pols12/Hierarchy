@@ -13,8 +13,12 @@ if ($resource->getControllerName() == 'item-set') {
                 if (!is_null($currentHierarchy)) {
                     echo '</ul></span></dd>';
                 }
-                echo '<dd class="value"><span class="value-content"><ul>';
                 $currentHierarchy = $grouping->getHierarchy();
+                // Show label if hierarchy_show_label checked in config
+                if ($this->setting('hierarchy_show_label')) {
+                    echo '<dt>' . $currentHierarchy->getLabel() . '</dt>';
+                }
+                echo '<dd class="value"><span class="value-content"><ul>';
                 $allGroupings = $this->api()->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                 // If hierarchy_show_all_groupings checked in config, iterate through all groupings
                 if ($this->setting('hierarchy_show_all_groupings')) {

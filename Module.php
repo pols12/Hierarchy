@@ -30,11 +30,11 @@ class Module extends AbstractModule
     
     public function uninstall(ServiceLocatorInterface $serviceLocator)
     {
-        // $connection = $serviceLocator->get('Omeka\Connection');
-        // $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9960278D7');
-        // $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9582A8328');
-        // $connection->exec('DROP TABLE hierarchy');
-        // $connection->exec('DROP TABLE hierarchy_grouping');
+        $connection = $serviceLocator->get('Omeka\Connection');
+        $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9960278D7');
+        $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9582A8328');
+        $connection->exec('DROP TABLE hierarchy');
+        $connection->exec('DROP TABLE hierarchy_grouping');
     }
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
@@ -71,6 +71,7 @@ class Module extends AbstractModule
         $params = $controller->params()->fromPost();
         $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
         $globalSettings->set('hierarchy_show_all_groupings', $params['hierarchy_show_all_groupings']);
+        $globalSettings->set('hierarchy_show_label', $params['hierarchy_show_label']);
     }
 
     // Add relevant hierarchy nested lists to item admin display sidebar
@@ -141,8 +142,12 @@ class Module extends AbstractModule
                     if (isset($currentHierarchy) || $itemSetCounter > 1) {
                         echo '</ul></dd>';
                     }
-                    echo '<dd class="value"><ul>';
                     $currentHierarchy = $grouping->getHierarchy();
+                    // Show label if hierarchy_show_label checked in config
+                    if ($globalSettings->get('hierarchy_show_label')) {
+                        echo '<dt>' . $currentHierarchy->getLabel() . '</dt>';
+                    }
+                    echo '<dd class="value"><ul>';
                     $allGroupings = $api->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                     // If hierarchy_show_all_groupings checked in config, iterate through all groupings
                     if ($globalSettings->get('hierarchy_show_all_groupings')) {

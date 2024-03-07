@@ -1,4 +1,10 @@
 <div>
+    <?php
+    // Show label if hierarchy_show_label checked in config
+     if ($this->setting('hierarchy_show_label')) {
+         echo '<h4>' . $hierarchy->getLabel() . '</h4>';
+     }
+    ?>
     <ul>
         <?php $iterate = function ($groupings) use (&$iterate) {
             foreach ($groupings as $grouping) {

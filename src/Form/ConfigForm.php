@@ -11,6 +11,19 @@ class ConfigForm extends Form
     {
         $this->add([
             'type' => 'checkbox',
+            'name' => 'hierarchy_show_label',
+            'options' => [
+                        'label' => 'Show hierarchy label', // @translate
+                        'info' => 'If checked, assigned label will display as hierarchy header on public pages.', // @translate
+                    ],
+            'attributes' => [
+                'checked' => $this->globalSettings->get('hierarchy_show_label') ? 'checked' : '',
+                'id' => 'show-label',
+            ],
+        ]);
+
+        $this->add([
+            'type' => 'checkbox',
             'name' => 'hierarchy_show_all_groupings',
             'options' => [
                         'label' => 'Show all hierarchy groupings', // @translate

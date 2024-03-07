@@ -49,7 +49,8 @@ class Hierarchy extends AbstractBlockLayout
 		$hierarchyData = $view->hierarchyHelper()->toJstree($hierarchy);
 
         return $view->partial('hierarchy/common/block-layout/hierarchy-public', [
-            'hierarchyData' => $hierarchyData,
+            'hierarchy' => $hierarchy,
+			'hierarchyData' => $hierarchyData,
         ]);
 	}
 }
