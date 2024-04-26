@@ -31,8 +31,8 @@ class Module extends AbstractModule
     public function uninstall(ServiceLocatorInterface $serviceLocator)
     {
         $connection = $serviceLocator->get('Omeka\Connection');
-        $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9960278D7');
-        $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_888D30B9582A8328');
+        $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_DCDE57FF960278D7');
+        $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_DCDE57FF582A8328');
         $connection->exec('DROP TABLE hierarchy');
         $connection->exec('DROP TABLE hierarchy_grouping');
     }
