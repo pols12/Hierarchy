@@ -121,13 +121,22 @@
                         thisJstree.rename_node(nodeObj, element.val());
                     }
                 });
-                // Remove deleted nodes and any children
+                // Disable 'deleted' nodes and any children to mark for deletion in DB
+                thisHierarchy.find('.jstree-node').each(function(index, element) {
+                    if (element.classList.contains('jstree-removenode-removed')) {
+                        thisJstree.disable_node(element);
+                        thisJstree.get_node(element).children.forEach(function(child_id) {
+                            thisJstree.disable_node(thisJstree.get_node(child_id));
+                        })
+                    };
+                });
+                var jsTreeData = JSON.stringify(thisJstree.get_json());
+                // Remove any newly added nodes marked for deletion
                 thisHierarchy.find('.jstree-node').each(function(index, element) {
                     if (element.classList.contains('jstree-removenode-removed')) {
                         thisJstree.delete_node(element);
                     };
                 });
-                var jsTreeData = JSON.stringify(thisJstree.get_json());
                 thisHierarchy.find("input[name*='data']").val(jsTreeData);
             });
         });

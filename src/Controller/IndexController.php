@@ -84,16 +84,26 @@ class IndexController extends AbstractActionController
         $hierarchyID = $hierarchyData['id'];
         $iterate = function ($groupings) use (&$iterate, $hierarchyID, &$parentGrouping, &$childCount) {
             foreach ($groupings as $grouping) {
-                $groupingID = $grouping['data']['groupingID'] ?: null;
+                $groupingID = isset($grouping['data']['groupingID']) ? $grouping['data']['groupingID'] : null;
+                $groupingDelete = isset($grouping['state']['disabled']) ? $grouping['state']['disabled'] : false;
                 $groupingData['item_set'] = $grouping['data']['itemSet'] ?: null;
                 $groupingData['hierarchy'] = $hierarchyID;
                 $groupingData['parent_grouping'] = $parentGrouping ?: '';
                 $groupingData['label'] = $grouping['data']['label'];
-                $groupingData['position'] = $grouping['data']['position'] ?: '';
-                if ($groupingID) {
+                $groupingData['position'] = isset($grouping['data']['position']) ? $grouping['data']['position']: '';
+                if ($groupingDelete) {
+                    // Delete groupings with disabled flag
+                    if (isset($groupingID)) {
+                        $response = $this->api()->delete('hierarchy_grouping', $groupingID);
+                    } else {
+                        // Ignore if newly created grouping marked for deletion
+                        continue;
+                    }
+                } else if (isset($groupingID)) {
                     // Update existing grouping metadata
                     $response = $this->api()->update('hierarchy_grouping', $groupingID, $groupingData);
                 } else {
+                    // Create new grouping
                     $response = $this->api()->create('hierarchy_grouping', $groupingData);
                 }
                 if (count($grouping['children']) > 0) {
