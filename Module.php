@@ -42,7 +42,13 @@ class Module extends AbstractModule
         $sharedEventManager->attach(
             'Omeka\Controller\Admin\Item',
             'view.show.sidebar',
-            [$this, 'addAdminHierarchies']
+            [$this, 'addItemAdminHierarchies']
+        );
+
+        $sharedEventManager->attach(
+            'Omeka\Controller\Admin\ItemSet',
+            'view.show.sidebar',
+            [$this, 'addItemSetAdminHierarchies']
         );
 
         $sharedEventManager->attach(
@@ -75,7 +81,7 @@ class Module extends AbstractModule
     }
 
     // Add relevant hierarchy nested lists to item admin display sidebar
-    public function addAdminHierarchies(Event $event)
+    public function addItemAdminHierarchies(Event $event)
     {
         $view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
@@ -96,6 +102,19 @@ class Module extends AbstractModule
             }
             echo '</div>';
         }
+    }
+
+    // Add relevant hierarchy nested lists to item set admin display sidebar
+    public function addItemSetAdminHierarchies(Event $event)
+    {
+        $view = $event->getTarget();
+        $api = $this->getServiceLocator()->get('Omeka\ApiManager');
+        $groupings = $api->search('hierarchy_grouping', ['item_set' => $view->resource->id(), 'sort_by' => 'position'])->getContent();
+
+        echo '<div class="meta-group">';
+        echo '<h4>' . $view->translate('Hierarchies') . '</h4>';
+        $this->buildNestedList($groupings, $view->resource, $view->item);
+        echo '</div>';
     }
 
     // Add relevant hierarchy nested lists to site item show page
@@ -143,11 +162,11 @@ class Module extends AbstractModule
                         echo '</ul></dd>';
                     }
                     $currentHierarchy = $grouping->getHierarchy();
+                    echo '<dd class="value"><ul>';
                     // Show label if hierarchy_show_label checked in config
                     if ($globalSettings->get('hierarchy_show_label')) {
                         echo '<dt>' . $currentHierarchy->getLabel() . '</dt>';
                     }
-                    echo '<dd class="value"><ul>';
                     $allGroupings = $api->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                     // If hierarchy_show_all_groupings checked in config, iterate through all groupings
                     if ($globalSettings->get('hierarchy_show_all_groupings')) {
@@ -176,7 +195,8 @@ class Module extends AbstractModule
                 }
 
                 if (!is_null($itemSet)) {
-                    foreach ($item->itemSets() as $itemItemSet) {
+                    $itemSetArray = isset($item) ? $item->itemSets() : array($currentItemSet);
+                    foreach ($itemSetArray as $itemItemSet) {
                         $itemSetIDArray[] = $itemItemSet->id();
                     }
                     // Bold groupings with current itemSet assigned
