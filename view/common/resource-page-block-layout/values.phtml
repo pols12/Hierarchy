@@ -1,4 +1,10 @@
 <?php
+$options = [];
+if ($this->siteSetting('exclude_resources_not_in_site')) {
+    $options['siteId'] = $this->currentSite()->id();
+}
+echo $resource->displayValues($options);
+
 $translate = $this->plugin('translate');
 if ($resource->getControllerName() == 'item-set') {
     $groupings = $this->api()->search('hierarchy_grouping', ['item_set' => $resource->id(), 'sort_by' => 'position'])->getContent();
@@ -91,9 +97,4 @@ if ($resource->getControllerName() == 'item-set') {
         echo '</span></dd></dl>';
     }
 }
-$options = [];
-if ($this->siteSetting('exclude_resources_not_in_site')) {
-    $options['siteId'] = $this->currentSite()->id();
-}
-echo $resource->displayValues($options);
 ?>
