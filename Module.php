@@ -191,7 +191,7 @@ class Module extends AbstractModule
                 } catch (\Exception $e) {
                     // Print groupings without assigned itemSet
                     $itemSet = null;
-                    echo '<li>' . $grouping->getLabel() . '</li>';
+                    echo '<li>' . $grouping->getLabel();
                 }
 
                 if (!is_null($itemSet)) {
@@ -201,9 +201,9 @@ class Module extends AbstractModule
                     }
                     // Bold groupings with current itemSet assigned
                     if (in_array($grouping->getItemSet()->getId(), $itemSetIDArray)) {
-                        echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b></li>';
+                        echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>';
                     } else {
-                        echo '<li>' . $itemSet->link($grouping->getLabel()) . '</li>';
+                        echo '<li>' . $itemSet->link($grouping->getLabel());
                     }
                 }
 
@@ -225,13 +225,16 @@ class Module extends AbstractModule
                     $childCount = count($childArray);
                     echo '<ul>';
                     $iterate($childArray, $currentItemSet);
-                    echo '</ul>';
+                    echo '</ul></li>';
                     $childArray = $prevChildArray;
                     continue;
                 } elseif ($childCount >= 1) {
+                    echo '</li>';
                     // Keep other variables the same if iterating 'sibling'
                     $childCount--;
                     continue;
+                } else {
+                    echo '</li>';
                 }
             }
         };
