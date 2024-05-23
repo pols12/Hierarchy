@@ -70,7 +70,7 @@ class HierarchyGrouping extends AbstractEntity
         return $this->label;
     }
     
-    public function setItemSet(ItemSet $itemSet)
+    public function setItemSet(ItemSet $itemSet = null)
     {
         $this->item_set = $itemSet;
     }

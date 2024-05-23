@@ -30,13 +30,12 @@ class HierarchyAdapter extends AbstractEntityAdapter
     public function hydrate(Request $request, EntityInterface $entity,
         ErrorStore $errorStore
     ) {
-        $data = $request->getContent();
-        if (isset($data['label'])) {
-            $entity->setLabel($data['label']);
+        if ($this->shouldHydrate($request, 'label')) {
+            $entity->setLabel($request->getValue('label'));
         }
         // (Re-)order blocks by their order in the input
         static $position = 1;
-        if (isset($data['position'])) {
+        if ($this->shouldHydrate($request, 'position')) {
             $entity->setPosition($position++);
         }
     }

@@ -116,9 +116,12 @@
                     if (element.val()) {
                         nodeObj.data[element.data('name')] = element.val();
                     }
-                    // Rename nodes with new label values
-                    if (element.data('name') == 'label' && element.val()) {
-                        thisJstree.rename_node(nodeObj, element.val());
+                    // Pass empty label and itemSet values to be handled by IndexController
+                    if (element.data('name') == 'label' && !element.val()) {
+                        nodeObj.data[element.data('name')] = '';
+                    }
+                    if (element.data('name') == 'itemSet' && !element.val()) {
+                        nodeObj.data[element.data('name')] = '';
                     }
                 });
                 // Disable 'deleted' nodes and any children to mark for deletion in DB

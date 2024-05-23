@@ -65,24 +65,27 @@ class HierarchyGroupingAdapter extends AbstractEntityAdapter
     public function hydrate(Request $request, EntityInterface $entity,
         ErrorStore $errorStore
     ) {
-        $data = $request->getContent();
-        if (isset($data['item_set'])) {
-            $itemSet = $this->getAdapter('item_sets')->findEntity($data['item_set']);
+        if ($this->shouldHydrate($request, 'item_set')) {
+            // If no itemSet, save to DB as null
+            $itemSet = null;
+            if ($request->getValue('item_set')) {
+                $itemSet = $this->getAdapter('item_sets')->findEntity($request->getValue('item_set'));
+            }
             $entity->setItemSet($itemSet);
         }
-        if (isset($data['parent_grouping'])) {
-            $entity->setParentGrouping($data['parent_grouping']);
+        if ($this->shouldHydrate($request, 'parent_grouping')) {
+            $entity->setParentGrouping($request->getValue('parent_grouping'));
         }
-        if (isset($data['label'])) {
-            $entity->setLabel($data['label']);
+        if ($this->shouldHydrate($request, 'label')) {
+            $entity->setLabel($request->getValue('label'));
         }
-        if (isset($data['hierarchy'])) {
-            $hierarchy = $this->getAdapter('hierarchy')->findEntity($data['hierarchy']);
+        if ($this->shouldHydrate($request, 'hierarchy')) {
+            $hierarchy = $this->getAdapter('hierarchy')->findEntity($request->getValue('hierarchy'));
             $entity->setHierarchy($hierarchy);
         }
         // (Re-)order groupings by their order in the input
         static $position = 1;
-        if (isset($data['position'])) {
+        if ($this->shouldHydrate($request, 'position')) {
             $entity->setPosition($position++);
         }
     }
