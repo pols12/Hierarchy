@@ -165,7 +165,7 @@ class Module extends AbstractModule
                     echo '<dd class="value"><ul>';
                     // Show label if hierarchy_show_label checked in config
                     if ($globalSettings->get('hierarchy_show_label')) {
-                        echo '<dt>' . $currentHierarchy->getLabel() . '</dt>';
+                        echo '<dt style="width:unset">' . $currentHierarchy->getLabel() . '</dt>';
                     }
                     $allGroupings = $api->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                     // If hierarchy_show_all_groupings checked in config, iterate through all groupings
