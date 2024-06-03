@@ -58,12 +58,6 @@ class Module extends AbstractModule
         );
     }
 
-    /**
-     * Get this module's configuration form.
-     *
-     * @param ViewModel $view
-     * @return string
-     */
     public function getConfigForm(PhpRenderer $renderer)
     {
         $formElementManager = $this->getServiceLocator()->get('FormElementManager');
@@ -78,27 +72,28 @@ class Module extends AbstractModule
         $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
         $globalSettings->set('hierarchy_show_all_groupings', $params['hierarchy_show_all_groupings']);
         $globalSettings->set('hierarchy_show_label', $params['hierarchy_show_label']);
+        $globalSettings->set('hierarchy_show_count', $params['hierarchy_show_count']);
     }
 
     // Add relevant hierarchy nested lists to item admin display sidebar
     public function addItemAdminHierarchies(Event $event)
     {
-        $view = $event->getTarget();
+        $this->view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        if ($view->item->itemSets()) {
+        if ($this->view->item->itemSets()) {
             echo '<div class="meta-group">';
-            echo '<h4>' . $view->translate('Hierarchies') . '</h4>';
+            echo '<h4>' . $this->view->translate('Hierarchies') . '</h4>';
 
             // Get order for printing item's sets from position on hierarchy page
             $itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
-            $itemSets = array_replace(array_flip($itemSetOrder), $view->item->itemSets());
+            $itemSets = array_replace(array_flip($itemSetOrder), $this->view->item->itemSets());
 
             foreach ($itemSets as $currentItemSet) {
                 if (is_numeric($currentItemSet)) {
                     continue;
                 }
                 $groupings = $api->search('hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
-                $this->buildNestedList($groupings, $currentItemSet, $view->item);
+                $this->buildNestedList($groupings, $currentItemSet, $this->view->item);
             }
             echo '</div>';
         }
@@ -107,36 +102,36 @@ class Module extends AbstractModule
     // Add relevant hierarchy nested lists to item set admin display sidebar
     public function addItemSetAdminHierarchies(Event $event)
     {
-        $view = $event->getTarget();
+        $this->view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        $groupings = $api->search('hierarchy_grouping', ['item_set' => $view->resource->id(), 'sort_by' => 'position'])->getContent();
+        $groupings = $api->search('hierarchy_grouping', ['item_set' => $this->view->resource->id(), 'sort_by' => 'position'])->getContent();
 
         echo '<div class="meta-group">';
-        echo '<h4>' . $view->translate('Hierarchies') . '</h4>';
-        $this->buildNestedList($groupings, $view->resource, $view->item);
+        echo '<h4>' . $this->view->translate('Hierarchies') . '</h4>';
+        $this->buildNestedList($groupings, $this->view->resource, $this->view->item);
         echo '</div>';
     }
 
     // Add relevant hierarchy nested lists to site item show page
     public function addSiteHierarchies(Event $event)
     {
-        $view = $event->getTarget();
+        $this->view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        if ($view->item->itemSets()) {
+        if ($this->view->item->itemSets()) {
             echo '<dl class="hierarchies">';
             echo '<div class="property">';
-            echo '<dt>' . $view->translate('Hierarchies') . '</dt>';
+            echo '<dt>' . $this->view->translate('Hierarchies') . '</dt>';
 
             // Get order for printing item's sets from position on Hierarchy page
             $itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
-            $itemSets = array_replace(array_flip($itemSetOrder), $view->item->itemSets());
+            $itemSets = array_replace(array_flip($itemSetOrder), $this->view->item->itemSets());
 
             foreach ($itemSets as $currentItemSet) {
                 if (is_numeric($currentItemSet)) {
                     continue;
                 }
                 $groupings = $api->search('hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
-                $this->buildNestedList($groupings, $currentItemSet, $view->item);
+                $this->buildNestedList($groupings, $currentItemSet, $this->view->item);
             }
             echo '</div></dl>';
         }
@@ -187,11 +182,13 @@ class Module extends AbstractModule
                 }
 
                 try {
-                    $itemSet = $api->read('item_sets', $grouping->getItemSet())->getContent();
+                    $setID = $grouping->getItemSet() ? $grouping->getItemSet()->id() : '';
+                    $itemSet = $api->read('item_sets', $setID)->getContent();
                 } catch (\Exception $e) {
                     // Print groupings without assigned itemSet
                     $itemSet = null;
-                    echo '<li>' . $grouping->getLabel();
+                    $groupingLabel = $grouping->getLabel() ?: '&nbsp;';
+                    echo '<li>' . $groupingLabel;
                 }
 
                 if (!is_null($itemSet)) {
@@ -199,11 +196,13 @@ class Module extends AbstractModule
                     foreach ($itemSetArray as $itemItemSet) {
                         $itemSetIDArray[] = $itemItemSet->id();
                     }
+                    // Show itemSet count if hierarchy_show_count checked in config
+                    $itemSetCount = $globalSettings->get('hierarchy_show_count') ? $this->view->hierarchyHelper()->itemSetCount($itemSet) : '';
                     // Bold groupings with current itemSet assigned
-                    if (in_array($grouping->getItemSet()->getId(), $itemSetIDArray)) {
-                        echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>';
+                    if (in_array($grouping->getItemSet()->id(), $itemSetIDArray)) {
+                        echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>' . $itemSetCount;
                     } else {
-                        echo '<li>' . $itemSet->link($grouping->getLabel());
+                        echo '<li>' . $itemSet->link($grouping->getLabel()) . $itemSetCount;
                     }
                 }
 

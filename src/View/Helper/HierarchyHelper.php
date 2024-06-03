@@ -95,11 +95,18 @@ class HierarchyHelper extends AbstractHelper
                 if ($grouping->getParentGrouping() != 0 && !$childNode) {
                     continue;
                 }
+                if ($grouping->getItemSet()) {
+                    // Show itemSet count in jstreee node label if hierarchy_show_count checked in config
+                    $itemSetCount = $this->getView()->setting('hierarchy_show_count') ? $this->itemSetCount($grouping->getItemSet()) : '';
+                    $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : trim($itemSetCount);
+                } else {
+                    $nodeText = $grouping->getLabel() ?: '';
+                }
                 $jstreeNodes[$key] = [
-                    'text' => $grouping->getLabel() ?: '',
+                    'text' => $nodeText,
                     'data' => [
                         'label' => $grouping->getLabel() ?: '',
-                        'itemSet' => $grouping->getItemSet() ? $grouping->getItemSet()->getId() : '',
+                        'itemSet' => $grouping->getItemSet() ? $grouping->getItemSet()->id() : '',
                         'groupingID' => $grouping->id(),
                         'position' => $grouping->getPosition(),
                     ],
@@ -128,5 +135,14 @@ class HierarchyHelper extends AbstractHelper
         };
 
         return $iterate($allGroupings);
+    }
+
+    public function itemSetCount($itemSet)
+    {
+        if ($itemSet->itemCount() > 1) {
+            return ' (' . $itemSet->itemCount() . ' items)';
+        } else {
+            return ' (' . $itemSet->itemCount() . ' item)';
+        }
     }
 }

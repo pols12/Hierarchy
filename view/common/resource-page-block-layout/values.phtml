@@ -45,19 +45,23 @@ if ($resource->getControllerName() == 'item-set') {
             }
 
             try {
-                $itemSet = $this->api()->read('item_sets', $grouping->getItemSet())->getContent();
+                $setID = $grouping->getItemSet() ? $grouping->getItemSet()->id() : '';
+                $itemSet = $this->api()->read('item_sets', $setID)->getContent();
             } catch (\Exception $e) {
                 // Print groupings without assigned itemSet
                 $itemSet = null;
-                echo '<li>' . $grouping->getLabel();
+                $groupingLabel = $grouping->getLabel() ?: '&nbsp;';
+                echo '<li>' . $groupingLabel;
             }
-            
+
             if (!is_null($itemSet)) {
+                // Show itemSet count if hierarchy_show_count checked in config
+                $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($itemSet) : '';
                 // Bold groupings with current itemSet assigned
-                if ($grouping->getItemSet()->getId() == $resource->id()) {
-                    echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>';
+                if ($grouping->getItemSet()->id() == $resource->id()) {
+                    echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>' . $itemSetCount;
                 } else {
-                    echo '<li>' . $itemSet->link($grouping->getLabel());
+                    echo '<li>' . $itemSet->link($grouping->getLabel()) . $itemSetCount;
                 }
             }
 

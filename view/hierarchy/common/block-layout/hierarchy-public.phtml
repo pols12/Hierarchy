@@ -8,14 +8,16 @@
     <ul>
         <?php $iterate = function ($groupings) use (&$iterate) {
             foreach ($groupings as $grouping) {
-                $groupingName = $grouping['text'];
+                $groupingName = $grouping['data']['label'];
                 $groupingSet = $grouping['data']['itemSet'];
                 if (empty($groupingSet)) {
                     echo '<li>' . $groupingName . '</li>';
                 } else {
                     try {
                         $itemSet = $this->api()->read('item_sets', $groupingSet)->getContent();
-                        echo '<li>'  . $itemSet->link($groupingName) . '</li>';
+                        // Show itemSet count if hierarchy_show_count checked in config
+                        $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($itemSet) : '';
+                        echo '<li>'  . $itemSet->link($groupingName) . $itemSetCount . '</li>';
                     } catch (NotFoundException $e) {
                         echo '<li>' . $groupingName . '</li>';
                     }

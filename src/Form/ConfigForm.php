@@ -34,6 +34,19 @@ class ConfigForm extends Form
                 'id' => 'show-all-groupings',
             ],
         ]);
+
+        $this->add([
+            'type' => 'checkbox',
+            'name' => 'hierarchy_show_count',
+            'options' => [
+                        'label' => 'Show hierarchy item counts', // @translate
+                        'info' => 'If checked, hierarchy groupings will show # of items within currently assigned itemSet.', // @translate
+                    ],
+            'attributes' => [
+                'checked' => $this->globalSettings->get('hierarchy_show_count') ? 'checked' : '',
+                'id' => 'show-count',
+            ],
+        ]);
     }
 
     public function setGlobalSettings($globalSettings)
