@@ -131,20 +131,20 @@ class Module extends AbstractModule
                     continue;
                 }
                 $groupings = $api->search('hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
-                $this->buildNestedList($groupings, $currentItemSet, $this->view->item);
+                $this->buildNestedList($groupings, $currentItemSet, $this->view->item, true);
             }
             echo '</div></dl>';
         }
     }
 
-    protected function buildNestedList(array $groupings, $currentItemSet, $item)
+    protected function buildNestedList(array $groupings, $currentItemSet, $item, $public = false)
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
         static $printedGroupings = [];
         static $itemSetCounter = 0;
         $itemSetCounter++;
-        $iterate = function ($groupings) use ($api, $globalSettings, $currentItemSet, $item, &$itemSetCounter, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
+        $iterate = function ($groupings) use ($api, $globalSettings, $currentItemSet, $item, $public, &$itemSetCounter, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
             foreach ($groupings as $key => $grouping) {
                 // Continue if grouping has already been printed
                 if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -200,9 +200,17 @@ class Module extends AbstractModule
                     $itemSetCount = $globalSettings->get('hierarchy_show_count') ? $this->view->hierarchyHelper()->itemSetCount($itemSet) : '';
                     // Bold groupings with current itemSet assigned
                     if (in_array($grouping->getItemSet()->id(), $itemSetIDArray)) {
-                        echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>' . $itemSetCount;
+                        if ($public) {
+                            echo '<li><b>' . $this->view->hyperlink($grouping->getLabel(), $this->view->url('site/hierarchy', ['site-slug' => $this->view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;
+                        } else {
+                            echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>' . $itemSetCount;
+                        }
                     } else {
-                        echo '<li>' . $itemSet->link($grouping->getLabel()) . $itemSetCount;
+                        if ($public) {
+                            echo '<li>' . $this->view->hyperlink($grouping->getLabel(), $this->view->url('site/hierarchy', ['site-slug' => $this->view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+                        } else {
+                            echo '<li>' . $itemSet->link($grouping->getLabel()) . $itemSetCount;
+                        }
                     }
                 }
 

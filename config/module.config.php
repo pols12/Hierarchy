@@ -19,6 +19,7 @@ return [
     'controllers' => [
         'invokables' => [
             'Hierarchy\Controller\Index' => 'Hierarchy\Controller\IndexController',
+            'Hierarchy\Controller\Site\Index' => 'Hierarchy\Controller\Site\IndexController',
         ],
     ],
     'view_manager' => [
@@ -73,6 +74,21 @@ return [
                                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                     ],
                                 ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'site' => [
+                'child_routes' => [
+                    'hierarchy' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/hierarchy/:grouping-id',
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Hierarchy\Controller\Site',
+                                'controller' => 'Index',
+                                'action' => 'hierarchy',
                             ],
                         ],
                     ],

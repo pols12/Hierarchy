@@ -10,6 +10,7 @@
             foreach ($groupings as $grouping) {
                 $groupingName = $grouping['data']['label'];
                 $groupingSet = $grouping['data']['itemSet'];
+                $groupingID = $grouping['data']['groupingID'];
                 if (empty($groupingSet)) {
                     echo '<li>' . $groupingName . '</li>';
                 } else {
@@ -17,7 +18,7 @@
                         $itemSet = $this->api()->read('item_sets', $groupingSet)->getContent();
                         // Show itemSet count if hierarchy_show_count checked in config
                         $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($itemSet) : '';
-                        echo '<li>'  . $itemSet->link($groupingName) . $itemSetCount . '</li>';
+                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
                     } catch (NotFoundException $e) {
                         echo '<li>' . $groupingName . '</li>';
                     }
