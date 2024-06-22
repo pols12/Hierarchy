@@ -8,10 +8,6 @@ class IndexController extends AbstractActionController
 {
     public function hierarchyAction()
     {
-        // $writer = new \Laminas\Log\Writer\Stream('logs/application.log');
-        // $logger = new \Laminas\Log\Logger();
-        // $logger->addWriter($writer);
-        // $logger->info($this->params('grouping-id'));
         $view = new ViewModel;
         $site = $this->currentSite();
 

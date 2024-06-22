@@ -72,6 +72,7 @@ class Module extends AbstractModule
         $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
         $globalSettings->set('hierarchy_show_all_groupings', $params['hierarchy_show_all_groupings']);
         $globalSettings->set('hierarchy_show_label', $params['hierarchy_show_label']);
+        $globalSettings->set('hierarchy_group_resources', $params['hierarchy_group_resources']);
         $globalSettings->set('hierarchy_show_count', $params['hierarchy_show_count']);
     }
 
@@ -196,8 +197,10 @@ class Module extends AbstractModule
                     foreach ($itemSetArray as $itemItemSet) {
                         $itemSetIDArray[] = $itemItemSet->id();
                     }
+
                     // Show itemSet count if hierarchy_show_count checked in config
-                    $itemSetCount = $globalSettings->get('hierarchy_show_count') ? $this->view->hierarchyHelper()->itemSetCount($itemSet) : '';
+                    $itemSetCount = $globalSettings->get('hierarchy_show_count') ? $this->view->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
+
                     // Bold groupings with current itemSet assigned
                     if (in_array($grouping->getItemSet()->id(), $itemSetIDArray)) {
                         if ($public) {

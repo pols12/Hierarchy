@@ -11,7 +11,6 @@ $valueLang = $filterLocale ? [$lang, ''] : null;
 $query = $this->params()->fromQuery();
 $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
 $this->htmlElement('body')->appendAttribute('class', 'item-set');
-// $query['item_set_id'] = $itemSet->id();
 ?>
 
 <?php
@@ -68,7 +67,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
 
         if (!is_null($itemSet)) {
             // Show itemSet count if hierarchy_show_count checked in config
-            $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($itemSet) : '';
+            $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
             // Bold groupings with current itemSet assigned
             if ($grouping->getItemSet()->id() == $itemSet->id()) {
                 echo '<li><b>' . $this->hyperlink($grouping->getLabel(), $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;

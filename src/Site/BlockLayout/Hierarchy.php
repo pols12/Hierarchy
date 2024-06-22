@@ -47,10 +47,12 @@ class Hierarchy extends AbstractBlockLayout
         }
 
 		$hierarchyData = $view->hierarchyHelper()->toJstree($hierarchy);
+		$allGroupings = $view->api()->search('hierarchy_grouping', ['hierarchy' => $hierarchy->id(), 'sort_by' => 'position'])->getContent();
 
         return $view->partial('hierarchy/common/block-layout/hierarchy-public', [
             'hierarchy' => $hierarchy,
 			'hierarchyData' => $hierarchyData,
+			'allGroupings' => $allGroupings,
         ]);
 	}
 }

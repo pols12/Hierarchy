@@ -97,7 +97,7 @@ class HierarchyHelper extends AbstractHelper
                 }
                 if ($grouping->getItemSet()) {
                     // Show itemSet count in jstreee node label if hierarchy_show_count checked in config
-                    $itemSetCount = $this->getView()->setting('hierarchy_show_count') ? $this->itemSetCount($grouping->getItemSet()) : '';
+                    $itemSetCount = $this->getView()->setting('hierarchy_show_count') ? $this->itemSetCount($grouping, $allGroupings) : '';
                     $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : trim($itemSetCount);
                 } else {
                     $nodeText = $grouping->getLabel() ?: '';
@@ -137,12 +137,41 @@ class HierarchyHelper extends AbstractHelper
         return $iterate($allGroupings);
     }
 
-    public function itemSetCount($itemSet)
+    public function itemSetCount($currentGrouping, $allGroupings)
     {
-        if ($itemSet->itemCount() > 1) {
-            return ' (' . $itemSet->itemCount() . ' items)';
+        $view = $this->getView();
+
+        // Gather all 'child' itemSets if hierarchy_group_resources checked in config
+        if ($view->setting('hierarchy_group_resources')) {
+            $iterate = function ($currentGrouping) use ($view, $allGroupings, &$iterate, &$itemSetArray) {
+                $itemSet = $currentGrouping->getItemSet() ? $view->api()->read('item_sets', $currentGrouping->getItemSet()->id())->getContent() : '';
+                if ($itemSet) {
+                    $itemSetArray[] = $itemSet;
+                }
+                // Return any groupings with current grouping as parent
+                $childArray = array_filter($allGroupings, function($child) use($currentGrouping) {
+                    return $child->getParentGrouping() == $currentGrouping->id();
+                });
+                foreach ($childArray as $childGrouping) {
+                    $iterate($childGrouping);
+                }
+            };
+            $iterate($currentGrouping);
         } else {
-            return ' (' . $itemSet->itemCount() . ' item)';
+            $itemSetArray[] = $currentGrouping->getItemSet() ? $view->api()->read('item_sets', $currentGrouping->getItemSet()->id())->getContent() : '';
+        }
+
+        // Remove duplicate item sets
+        $itemSetArray = array_unique($itemSetArray, SORT_REGULAR);
+        $itemCount = 0;
+        foreach ($itemSetArray as $itemSet) {
+            $itemCount += $itemSet->itemCount();
+        }
+
+        if ($itemCount > 1) {
+            return ' (' . $itemCount . ' items)';
+        } else {
+            return ' (' . $itemCount . ' item)';
         }
     }
 }

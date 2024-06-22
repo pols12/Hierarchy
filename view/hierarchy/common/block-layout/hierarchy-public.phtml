@@ -6,7 +6,7 @@
      }
     ?>
     <ul>
-        <?php $iterate = function ($groupings) use (&$iterate) {
+        <?php $iterate = function ($groupings) use (&$iterate, $allGroupings) {
             foreach ($groupings as $grouping) {
                 $groupingName = $grouping['data']['label'];
                 $groupingSet = $grouping['data']['itemSet'];
@@ -17,7 +17,8 @@
                     try {
                         $itemSet = $this->api()->read('item_sets', $groupingSet)->getContent();
                         // Show itemSet count if hierarchy_show_count checked in config
-                        $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($itemSet) : '';
+                        $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
+                        $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
                     } catch (NotFoundException $e) {
                         echo '<li>' . $groupingName . '</li>';
