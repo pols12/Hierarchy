@@ -70,7 +70,6 @@ class Module extends AbstractModule
     {
         $params = $controller->params()->fromPost();
         $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
-        $globalSettings->set('hierarchy_show_all_groupings', $params['hierarchy_show_all_groupings']);
         $globalSettings->set('hierarchy_show_label', $params['hierarchy_show_label']);
         $globalSettings->set('hierarchy_group_resources', $params['hierarchy_group_resources']);
         $globalSettings->set('hierarchy_show_count', $params['hierarchy_show_count']);
@@ -163,12 +162,10 @@ class Module extends AbstractModule
                     if ($globalSettings->get('hierarchy_show_label')) {
                         echo '<dt style="width:unset">' . $currentHierarchy->getLabel() . '</dt>';
                     }
+
                     $allGroupings = $api->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
-                    // If hierarchy_show_all_groupings checked in config, iterate through all groupings
-                    if ($globalSettings->get('hierarchy_show_all_groupings')) {
-                        $iterate($allGroupings, $currentItemSet);
-                        continue;
-                    }
+                    $iterate($allGroupings, $currentItemSet);
+                    continue;
                 }
 
                 if ($grouping->getParentGrouping() != 0) {

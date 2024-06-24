@@ -24,19 +24,6 @@ class ConfigForm extends Form
 
         $this->add([
             'type' => 'checkbox',
-            'name' => 'hierarchy_show_all_groupings',
-            'options' => [
-                        'label' => 'Show all hierarchy groupings', // @translate
-                        'info' => 'If left unchecked, only direct ancestors & descendants of assigned grouping will display on resource pages.', // @translate
-                    ],
-            'attributes' => [
-                'checked' => $this->globalSettings->get('hierarchy_show_all_groupings') ? 'checked' : '',
-                'id' => 'show-all-groupings',
-            ],
-        ]);
-
-        $this->add([
-            'type' => 'checkbox',
             'name' => 'hierarchy_group_resources',
             'options' => [
                         'label' => 'Combine hierarchy resources', // @translate
