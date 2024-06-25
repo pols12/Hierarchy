@@ -21,7 +21,6 @@ class IndexController extends AbstractActionController
 
         foreach ($itemSetArray as $itemSet) {
             $itemSetIDArray[] = $itemSet->id();
-            $logger->info($itemSet->itemCount());
         }
 
         $query = $this->params()->fromQuery();

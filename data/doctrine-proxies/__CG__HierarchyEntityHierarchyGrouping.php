@@ -239,7 +239,7 @@ class HierarchyGrouping extends \Hierarchy\Entity\HierarchyGrouping implements \
     /**
      * {@inheritDoc}
      */
-    public function setItemSet(\Omeka\Entity\ItemSet $itemSet)
+    public function setItemSet(\Omeka\Entity\ItemSet $itemSet = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setItemSet', [$itemSet]);

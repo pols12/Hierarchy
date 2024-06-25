@@ -39,16 +39,4 @@ class HierarchyAdapter extends AbstractEntityAdapter
             $entity->setPosition($position++);
         }
     }
-
-    public function validateEntity(EntityInterface $entity,
-        ErrorStore $errorStore
-    ) {
-        $label = $entity->getLabel();
-        if (false == trim($label)) {
-            $errorStore->addError('o:label', 'The hierarchy label cannot be empty.'); // @translate
-        }
-        if (!$this->isUnique($entity, ['label' => $label])) {
-            $errorStore->addError('label', 'The hierarchy label is already taken.'); // @translate
-        }
-    }
 }

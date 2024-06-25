@@ -16,7 +16,7 @@ class Hierarchy extends AbstractEntity
     protected $id;
 
     /**
-     * @Column(unique=true)
+     * @Column(type="string", nullable=true)
      */
     protected $label;
 
