@@ -141,6 +141,23 @@ class HierarchyHelper extends AbstractHelper
     {
         $view = $this->getView();
 
+        $itemSetArray = $this->getChildItemsets($currentGrouping, $allGroupings);
+        $itemCount = 0;
+        foreach ($itemSetArray as $itemSet) {
+            $itemCount += $itemSet->itemCount();
+        }
+
+        if ($itemCount > 1) {
+            return ' (' . $itemCount . ' items)';
+        } else {
+            return ' (' . $itemCount . ' item)';
+        }
+    }
+
+    public function getChildItemsets($currentGrouping, $allGroupings)
+    {
+        $view = $this->getView();
+
         // Gather all 'child' itemSets if hierarchy_group_resources checked in config
         if ($view->setting('hierarchy_group_resources')) {
             $iterate = function ($currentGrouping) use ($view, $allGroupings, &$iterate, &$itemSetArray) {
@@ -163,15 +180,7 @@ class HierarchyHelper extends AbstractHelper
 
         // Remove duplicate item sets
         $itemSetArray = array_unique($itemSetArray, SORT_REGULAR);
-        $itemCount = 0;
-        foreach ($itemSetArray as $itemSet) {
-            $itemCount += $itemSet->itemCount();
-        }
 
-        if ($itemCount > 1) {
-            return ' (' . $itemCount . ' items)';
-        } else {
-            return ' (' . $itemCount . ' item)';
-        }
+        return $itemSetArray;
     }
 }
