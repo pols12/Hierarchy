@@ -179,7 +179,13 @@ class Module extends AbstractModule
                     }
                 }
 
-                $groupingLabel = $grouping->getLabel() ?: '_';
+                // $groupingLabel = $grouping->getLabel() ?: '_';
+                if ($grouping->getItemSet()) {
+                    // If no grouping label, show itemSet title as grouping heading
+                    $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->title();
+                } else {
+                    $groupingLabel = $grouping->getLabel() ?: '_';
+                }
 
                 try {
                     $setID = $grouping->getItemSet() ? $grouping->getItemSet()->id() : '';

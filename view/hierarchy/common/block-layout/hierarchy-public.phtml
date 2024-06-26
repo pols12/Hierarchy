@@ -19,6 +19,8 @@
                         // Show itemSet count if hierarchy_show_count checked in config
                         $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
                         $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
+                        // If no grouping label, show itemSet title as grouping heading
+                        $groupingName = $grouping['data']['label'] ?: $itemSet->title();
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
                     } catch (NotFoundException $e) {
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . '</li>';

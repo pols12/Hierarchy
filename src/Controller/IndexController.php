@@ -89,16 +89,8 @@ class IndexController extends AbstractActionController
                 $groupingData['item_set'] = $grouping['data']['itemSet'] ?: null;
                 $groupingData['hierarchy'] = $hierarchyID;
                 $groupingData['parent_grouping'] = $parentGrouping ?: '';
-                // If no label, use itemSet title. If no itemSet, leave blank
-                if ($grouping['data']['label']) {
-                    $groupingData['label'] = $grouping['data']['label'];
-                } else if ($grouping['data']['itemSet']) {
-                    $itemSet = $this->api()->read('item_sets', $grouping['data']['itemSet'])->getContent();
-                    $groupingData['label'] = $itemSet ? $itemSet->title() : '';
-                } else {
-                    $groupingData['label'] = '';
-                }
-                $groupingData['position'] = isset($grouping['data']['position']) ? $grouping['data']['position']: '';
+                $groupingData['label'] = isset($grouping['data']['label']) ? $grouping['data']['label'] : '';
+                $groupingData['position'] = isset($grouping['data']['position']) ? $grouping['data']['position'] : '';
                 if ($groupingDelete) {
                     // Delete groupings with disabled flag
                     if (isset($groupingID)) {

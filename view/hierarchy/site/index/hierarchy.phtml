@@ -55,7 +55,12 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             }
         }
 
-        $groupingLabel = $grouping->getLabel() ?: ' ';
+        if ($grouping->getItemSet()) {
+            // If no grouping label, show itemSet title as grouping heading
+            $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->title();
+        } else {
+            $groupingLabel = $grouping->getLabel() ?: ' ';
+        }
 
         try {
             $setID = $grouping->getItemSet() ? $grouping->getItemSet()->id() : '';

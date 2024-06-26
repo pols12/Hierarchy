@@ -96,9 +96,10 @@ class HierarchyHelper extends AbstractHelper
                     continue;
                 }
                 if ($grouping->getItemSet()) {
-                    // Show itemSet count in jstreee node label if hierarchy_show_count checked in config
+                    // Show itemSet count in jstree node label if hierarchy_show_count checked in config
                     $itemSetCount = $this->getView()->setting('hierarchy_show_count') ? $this->itemSetCount($grouping, $allGroupings) : '';
-                    $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : trim($itemSetCount);
+                    // If no grouping label, show itemSet title as grouping heading
+                    $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : $grouping->getItemSet()->title() . $itemSetCount;
                 } else {
                     $nodeText = $grouping->getLabel() ?: '';
                 }
