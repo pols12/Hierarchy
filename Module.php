@@ -179,14 +179,19 @@ class Module extends AbstractModule
                     }
                 }
 
+                $groupingLabel = $grouping->getLabel() ?: '_';
+
                 try {
                     $setID = $grouping->getItemSet() ? $grouping->getItemSet()->id() : '';
                     $itemSet = $api->read('item_sets', $setID)->getContent();
                 } catch (\Exception $e) {
                     // Print groupings without assigned itemSet
                     $itemSet = null;
-                    $groupingLabel = $grouping->getLabel() ?: '&nbsp;';
-                    echo '<li>' . $groupingLabel;
+                    if ($public) {
+                        echo '<li>' . $this->view->hyperlink($groupingLabel, $this->view->url('site/hierarchy', ['site-slug' => $this->view->currentSite()->slug(), 'grouping-id' => $grouping->id()]));
+                    } else {
+                        echo '<li>' . $groupingLabel;
+                    }
                 }
 
                 if (!is_null($itemSet)) {
@@ -201,15 +206,15 @@ class Module extends AbstractModule
                     // Bold groupings with current itemSet assigned
                     if (in_array($grouping->getItemSet()->id(), $itemSetIDArray)) {
                         if ($public) {
-                            echo '<li><b>' . $this->view->hyperlink($grouping->getLabel(), $this->view->url('site/hierarchy', ['site-slug' => $this->view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;
+                            echo '<li><b>' . $this->view->hyperlink($groupingLabel, $this->view->url('site/hierarchy', ['site-slug' => $this->view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;
                         } else {
-                            echo '<li><b>' . $itemSet->link($grouping->getLabel()) . '</b>' . $itemSetCount;
+                            echo '<li><b>' . $itemSet->link($groupingLabel) . '</b>' . $itemSetCount;
                         }
                     } else {
                         if ($public) {
-                            echo '<li>' . $this->view->hyperlink($grouping->getLabel(), $this->view->url('site/hierarchy', ['site-slug' => $this->view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+                            echo '<li>' . $this->view->hyperlink($groupingLabel, $this->view->url('site/hierarchy', ['site-slug' => $this->view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
                         } else {
-                            echo '<li>' . $itemSet->link($grouping->getLabel()) . $itemSetCount;
+                            echo '<li>' . $itemSet->link($groupingLabel) . $itemSetCount;
                         }
                     }
                 }
