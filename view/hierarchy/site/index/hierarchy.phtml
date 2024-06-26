@@ -21,7 +21,7 @@ if ($hierarchyGrouping->getLabel()) {
 $pageGroupingItemSet = $hierarchyGrouping->getItemSet() ?: null;
 
 // Iterate through groupings to create nested list in metadata sidebar
-$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $pageGroupingItemSet) {
+$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $pageGroupingItemSet, $valueLang) {
     foreach ($groupings as $key => $grouping) {
         // Continue if grouping has already been printed
         if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -57,7 +57,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
 
         if ($grouping->getItemSet()) {
             // If no grouping label, show itemSet title as grouping heading
-            $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->title();
+            $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
         } else {
             $groupingLabel = $grouping->getLabel() ?: ' ';
         }

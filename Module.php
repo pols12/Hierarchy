@@ -141,10 +141,13 @@ class Module extends AbstractModule
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
+        $filterLocale = (bool) $this->view->siteSetting('filter_locale_values');
+        $lang = $this->view->lang();
+        $valueLang = $filterLocale ? [$lang, ''] : null;
         static $printedGroupings = [];
         static $itemSetCounter = 0;
         $itemSetCounter++;
-        $iterate = function ($groupings) use ($api, $globalSettings, $currentItemSet, $item, $public, &$itemSetCounter, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
+        $iterate = function ($groupings) use ($api, $globalSettings, $currentItemSet, $item, $public, $valueLang, &$itemSetCounter, &$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount) {
             foreach ($groupings as $key => $grouping) {
                 // Continue if grouping has already been printed
                 if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -179,10 +182,9 @@ class Module extends AbstractModule
                     }
                 }
 
-                // $groupingLabel = $grouping->getLabel() ?: '_';
                 if ($grouping->getItemSet()) {
                     // If no grouping label, show itemSet title as grouping heading
-                    $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->title();
+                    $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
                 } else {
                     $groupingLabel = $grouping->getLabel() ?: '_';
                 }
