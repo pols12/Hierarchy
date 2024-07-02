@@ -1,0 +1,38 @@
+<?php
+$itemSets = [];
+switch (get_class($resource)) {
+    case 'Omeka\Api\Representation\ItemRepresentation':
+        $itemSets = $resource->itemSets();
+        $item = $resource;
+        break;
+    case 'Omeka\Api\Representation\ItemSetRepresentation':
+        $itemSets[] = $resource;
+        $item = null;
+        break;
+    default:
+        return;
+}
+
+if (!$itemSets) {
+    return;
+}
+
+// Get order for printing hierarchies by comparing resource/resource's itemSets to position on Hierarchy page
+$itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
+$itemSets = !empty($item) ? array_replace(array_flip($itemSetOrder), $item->itemSets()) : $itemSets;
+?>
+
+<dl class="hierarchies">
+    <div class="property">
+        <dt><?php echo $this->translate('Hierarchies'); ?></dt>
+            <?php foreach ($itemSets as $itemSet): ?>
+            <?php 
+            if (is_numeric($itemSet)) {
+                continue;
+            }
+            $groupings = $api->search('hierarchy_grouping', ['item_set' => $itemSet->id(), 'sort_by' => 'position'])->getContent();
+            echo $this->hierarchyHelper()->buildNestedList($groupings, $itemSet, $item, true); 
+            ?>
+            <?php endforeach; ?>
+    </div>
+</dl>

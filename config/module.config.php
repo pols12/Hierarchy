@@ -1,4 +1,6 @@
 <?php
+namespace Hierarchy;
+
 return [
     'translator' => [
         'translation_file_patterns' => [
@@ -29,12 +31,12 @@ return [
     ],
     'block_layouts' => [
         'invokables' => [
-            'Hierarchy' => Hierarchy\Site\BlockLayout\Hierarchy::class,
+            'Hierarchy' => Site\BlockLayout\Hierarchy::class,
         ],
     ],
     'view_helpers' => [
         'invokables' => [
-            'hierarchyHelper' => Hierarchy\View\Helper\HierarchyHelper::class,
+            'hierarchyHelper' => View\Helper\HierarchyHelper::class,
         ],
     ],
     'entity_manager' => [
@@ -105,4 +107,17 @@ return [
             ],
         ],
     ],
+    'resource_page_block_layouts' => [
+         'invokables' => [
+             'hierarchy' => Site\ResourcePageBlockLayout\Hierarchy::class,
+         ],
+     ],
+     'resource_page_blocks_default' => [
+         'items' => [
+             'main' => ['hierarchy'],
+         ],
+         'item_sets' => [
+             'main' => ['hierarchy'],
+        ],
+     ],
 ];
