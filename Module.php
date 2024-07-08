@@ -19,6 +19,22 @@ class Module extends AbstractModule
         return include __DIR__ . '/config/module.config.php';
     }
 
+    public function onBootstrap(MvcEvent $event)
+    {
+        parent::onBootstrap($event);
+
+        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+
+        // Allow all users to access public hierarchies
+        $acl->allow(
+            null,
+            ['Hierarchy\Entity\HierarchyGrouping',
+            'Hierarchy\Api\Adapter\HierarchyGroupingAdapter',
+            ],
+        );
+        $acl->allow(null, 'Hierarchy\Controller\Site\Index', 'hierarchy');
+    }
+
     public function install(ServiceLocatorInterface $serviceLocator)
     {
         $connection = $serviceLocator->get('Omeka\Connection');
