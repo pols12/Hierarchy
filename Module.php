@@ -22,14 +22,16 @@ class Module extends AbstractModule
     public function onBootstrap(MvcEvent $event)
     {
         parent::onBootstrap($event);
-
+    
         $acl = $this->getServiceLocator()->get('Omeka\Acl');
-
+    
         // Allow all users to access public hierarchies
         $acl->allow(
             null,
-            ['Hierarchy\Entity\HierarchyGrouping',
+            ['Hierarchy\Entity\Hierarchy',
+            'Hierarchy\Entity\HierarchyGrouping',
             'Hierarchy\Api\Adapter\HierarchyGroupingAdapter',
+            'Hierarchy\Api\Adapter\HierarchyAdapter',
             ],
         );
         $acl->allow(null, 'Hierarchy\Controller\Site\Index', 'hierarchy');
