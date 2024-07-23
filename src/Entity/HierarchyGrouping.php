@@ -28,9 +28,13 @@ class HierarchyGrouping extends AbstractEntity
     protected $label;
 
     /**
-     * @ManyToOne(targetEntity="Omeka\Entity\ItemSet")
-     * @JoinColumn(nullable=true, onDelete="CASCADE")
-     * @var int
+     * @ManyToOne(
+     *     targetEntity="Omeka\Entity\ItemSet"
+     * )
+     * @JoinColumn(
+     *     nullable=true,
+     *     onDelete="SET NULL"
+     * )
      */
     protected $item_set;
 
