@@ -68,7 +68,9 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
         } catch (\Exception $e) {
             // Print groupings without assigned itemSet
             $itemSet = null;
-            echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()]));
+            // Show (combined child) itemSet count if hierarchy_show_count checked in config
+            $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
+            echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
         }
 
         if (!is_null($itemSet)) {
