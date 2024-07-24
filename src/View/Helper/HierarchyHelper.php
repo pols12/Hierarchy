@@ -98,16 +98,24 @@ class HierarchyHelper extends AbstractHelper
                 // Show itemSet count in jstree node label if hierarchy_show_count checked in config
                 $itemSetCount = $this->getView()->setting('hierarchy_show_count') ? $this->itemSetCount($grouping, $allGroupings) : '';
                 if ($grouping->getItemSet()) {
-                    // If no grouping label, show itemSet title as grouping heading
-                    $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : $grouping->getItemSet()->title() . $itemSetCount;
+                    try {
+                        // If no grouping label, show itemSet title as grouping heading
+                        $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : $grouping->getItemSet()->title() . $itemSetCount;
+                        $groupingItemSet = $grouping->getItemSet()->id();
+                    } catch (\Exception $e) {
+                        // Catch and ignore private itemSets
+                        $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : $itemSetCount;
+                        $groupingItemSet = '';
+                    }
                 } else {
                     $nodeText = $grouping->getLabel() ? $grouping->getLabel() . $itemSetCount : $itemSetCount;
+                    $groupingItemSet = '';
                 }
                 $jstreeNodes[$key] = [
                     'text' => $nodeText,
                     'data' => [
                         'label' => $grouping->getLabel() ?: '',
-                        'itemSet' => $grouping->getItemSet() ? $grouping->getItemSet()->id() : '',
+                        'itemSet' => $groupingItemSet,
                         'groupingID' => $grouping->id(),
                         'position' => $grouping->getPosition(),
                     ],
@@ -145,7 +153,7 @@ class HierarchyHelper extends AbstractHelper
         $itemSetArray = $this->getChildItemsets($currentGrouping, $allGroupings);
         $itemCount = 0;
         foreach ($itemSetArray as $itemSet) {
-            $itemCount += $itemSet->itemCount();
+            $itemCount += isset($itemSet) ? $itemSet->itemCount() : 0;
         }
 
         if ($itemCount <> 1) {
@@ -158,14 +166,18 @@ class HierarchyHelper extends AbstractHelper
     public function getChildItemsets($currentGrouping, $allGroupings)
     {
         $view = $this->getView();
+        $itemSetArray = array();
 
         // Gather all 'child' itemSets if hierarchy_group_resources checked in config
         if ($view->setting('hierarchy_group_resources')) {
-            $itemSetArray = array();
             $iterate = function ($currentGrouping) use ($view, $allGroupings, &$iterate, &$itemSetArray) {
-                $itemSet = $currentGrouping->getItemSet() ? $view->api()->read('item_sets', $currentGrouping->getItemSet()->id())->getContent() : '';
-                if ($itemSet) {
-                    $itemSetArray[] = $itemSet;
+                if ($currentGrouping->getItemSet()) {
+                    try {
+                        $itemSet = $currentGrouping->getItemSet() ? $view->api()->read('item_sets', $currentGrouping->getItemSet()->id())->getContent() : null;
+                        $itemSetArray[] = $itemSet;
+                    } catch (\Exception $e) {
+                        // Move on to children -- itemSet not found or private
+                    }
                 }
                 // Return any groupings with current grouping as parent
                 $childArray = array_filter($allGroupings, function($child) use($currentGrouping) {
@@ -177,7 +189,12 @@ class HierarchyHelper extends AbstractHelper
             };
             $iterate($currentGrouping);
         } else {
-            $itemSetArray[] = $currentGrouping->getItemSet() ? $view->api()->read('item_sets', $currentGrouping->getItemSet()->id())->getContent() : '';
+            try {
+                $itemSet = $currentGrouping->getItemSet() ? $view->api()->read('item_sets', $currentGrouping->getItemSet()->id())->getContent() : null;
+                $itemSetArray[] = $itemSet;
+            } catch (\Exception $e) {
+                // Move on to children -- itemSet not found or private
+            }
         }
 
         // Remove duplicate item sets
@@ -231,8 +248,13 @@ class HierarchyHelper extends AbstractHelper
                 }
 
                 if ($grouping->getItemSet()) {
-                    // If no grouping label, show itemSet title as grouping heading
-                    $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
+                    try {
+                        // If no grouping label, show itemSet title as grouping heading
+                        $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
+                    } catch (\Exception $e) {
+                        // itemSet not found or private
+                        $groupingLabel = $grouping->getLabel() ?: '_';
+                    }
                 } else {
                     $groupingLabel = $grouping->getLabel() ?: '_';
                 }
@@ -243,10 +265,8 @@ class HierarchyHelper extends AbstractHelper
                 } catch (\Exception $e) {
                     // Print groupings without assigned itemSet
                     $itemSet = null;
-
                     // Show (combined child) itemSet count if hierarchy_show_count checked in config
                     $itemSetCount = $view->setting('hierarchy_show_count') ? $this->itemSetCount($grouping, $allGroupings) : '';
-
                     if ($public) {
                         echo '<li>' . $view->hyperlink($groupingLabel, $view->url('site/hierarchy', ['site-slug' => $view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
                     } else {

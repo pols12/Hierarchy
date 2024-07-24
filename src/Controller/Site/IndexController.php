@@ -20,7 +20,7 @@ class IndexController extends AbstractActionController
         $itemSetArray = $this->viewHelpers()->get('hierarchyHelper')->getChildItemsets($grouping, $allGroupings);
 
         foreach ($itemSetArray as $itemSet) {
-            $itemSetIDArray[] = $itemSet->id();
+            $itemSetIDArray[] = $itemSet ? $itemSet->id() : null;
         }
 
         $query = $this->params()->fromQuery();

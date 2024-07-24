@@ -18,10 +18,10 @@ if ($hierarchyGrouping->getLabel()) {
     echo $this->pageTitle($hierarchyGrouping->getLabel(), 2);
 }
 
-$pageGroupingItemSet = $hierarchyGrouping->getItemSet() ?: null;
+// $pageGroupingItemSet = $hierarchyGrouping->getItemSet() ?: null;
 
 // Iterate through groupings to create nested list in metadata sidebar
-$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $pageGroupingItemSet, $valueLang) {
+$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $hierarchyGrouping, $valueLang) {
     foreach ($groupings as $key => $grouping) {
         // Continue if grouping has already been printed
         if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -56,18 +56,19 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
         }
 
         if ($grouping->getItemSet()) {
-            // If no grouping label, show itemSet title as grouping heading
-            $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
+            try {
+                // If no grouping label, show itemSet title as grouping heading
+                $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
+                $itemSet = $this->api()->read('item_sets', $grouping->getItemSet()->id())->getContent();
+            } catch (\Exception $e) {
+                // Print groupings with private itemSet
+                $itemSet = '';
+                $groupingLabel = $grouping->getLabel() ?: ' ';
+            }
         } else {
-            $groupingLabel = $grouping->getLabel() ?: ' ';
-        }
-
-        try {
-            $setID = $grouping->getItemSet() ? $grouping->getItemSet()->id() : '';
-            $itemSet = $this->api()->read('item_sets', $setID)->getContent();
-        } catch (\Exception $e) {
             // Print groupings without assigned itemSet
             $itemSet = null;
+            $groupingLabel = $grouping->getLabel() ?: ' ';
             // Show (combined child) itemSet count if hierarchy_show_count checked in config
             $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
             echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
@@ -76,8 +77,8 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
         if (!is_null($itemSet)) {
             // Show itemSet count if hierarchy_show_count checked in config
             $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
-            // Bold groupings with current itemSet assigned
-            if (isset($pageGroupingItemSet) && $grouping->getItemSet()->id() == $pageGroupingItemSet->id()) {
+            // Bold current page grouping
+            if ($grouping->id() == $hierarchyGrouping->id()) {
                 echo '<li><b>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;
             } else {
                 echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
