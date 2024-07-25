@@ -18,8 +18,6 @@ if ($hierarchyGrouping->getLabel()) {
     echo $this->pageTitle($hierarchyGrouping->getLabel(), 2);
 }
 
-// $pageGroupingItemSet = $hierarchyGrouping->getItemSet() ?: null;
-
 // Iterate through groupings to create nested list in metadata sidebar
 $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $hierarchyGrouping, $valueLang) {
     foreach ($groupings as $key => $grouping) {

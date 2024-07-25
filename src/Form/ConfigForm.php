@@ -24,19 +24,6 @@ class ConfigForm extends Form
 
         $this->add([
             'type' => 'checkbox',
-            'name' => 'hierarchy_group_resources',
-            'options' => [
-                        'label' => 'Combine hierarchy resources', // @translate
-                        'info' => 'If checked, groupings will display resources of all child groupings in resource counts and on hierarchy grouping browse pages.', // @translate
-                    ],
-            'attributes' => [
-                'checked' => $this->globalSettings->get('hierarchy_group_resources') ? 'checked' : '',
-                'id' => 'group-resources',
-            ],
-        ]);
-
-        $this->add([
-            'type' => 'checkbox',
             'name' => 'hierarchy_show_count',
             'options' => [
                         'label' => 'Show hierarchy resource counts', // @translate
@@ -45,6 +32,19 @@ class ConfigForm extends Form
             'attributes' => [
                 'checked' => $this->globalSettings->get('hierarchy_show_count') ? 'checked' : '',
                 'id' => 'show-count',
+            ],
+        ]);
+
+        $this->add([
+            'type' => 'checkbox',
+            'name' => 'hierarchy_group_resources',
+            'options' => [
+                        'label' => 'Combine hierarchy resources', // @translate
+                        'info' => 'If checked, groupings will display resources of all child groupings in resource counts and on hierarchy grouping browse pages.', // @translate
+                    ],
+            'attributes' => [
+                'checked' => $this->globalSettings->get('hierarchy_group_resources') ? 'checked' : '',
+                'id' => 'group-resources',
             ],
         ]);
     }
