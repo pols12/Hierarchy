@@ -156,7 +156,10 @@ class HierarchyHelper extends AbstractHelper
             $itemCount += isset($itemSet) ? $itemSet->itemCount() : 0;
         }
 
-        if ($itemCount <> 1) {
+        if ($itemCount == 0) {
+            // Hide count if 0 items returned
+            return null;
+        } else if ($itemCount > 1) {
             return ' (' . $itemCount . ' items)';
         } else {
             return ' (' . $itemCount . ' item)';
@@ -193,7 +196,7 @@ class HierarchyHelper extends AbstractHelper
                 $itemSet = $currentGrouping->getItemSet() ? $view->api()->read('item_sets', $currentGrouping->getItemSet()->id())->getContent() : null;
                 $itemSetArray[] = $itemSet;
             } catch (\Exception $e) {
-                // Move on to children -- itemSet not found or private
+                // Move on -- itemSet not found or private
             }
         }
 
@@ -267,10 +270,15 @@ class HierarchyHelper extends AbstractHelper
                     $itemSet = null;
                     // Show (combined child) itemSet count if hierarchy_show_count checked in config
                     $itemSetCount = $view->setting('hierarchy_show_count') ? $this->itemSetCount($grouping, $allGroupings) : '';
-                    if ($public) {
-                        echo '<li>' . $view->hyperlink($groupingLabel, $view->url('site/hierarchy', ['site-slug' => $view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+
+                    if ($itemSetCount != null) {
+                        if ($public) {
+                            echo '<li>' . $view->hyperlink($groupingLabel, $view->url('site/hierarchy', ['site-slug' => $view->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+                        } else {
+                            echo '<li>' . $groupingLabel . $itemSetCount;
+                        }
                     } else {
-                        echo '<li>' . $groupingLabel . $itemSetCount;
+                        echo '<li>' . $groupingLabel;
                     }
                 }
 
