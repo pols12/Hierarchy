@@ -124,12 +124,13 @@
                         nodeObj.data[element.data('name')] = '';
                     }
                 });
-                // Disable 'deleted' nodes and any children to mark for deletion in DB
+                // Disable 'deleted' nodes and any descendants to mark for deletion in DB
                 thisHierarchy.find('.jstree-node').each(function(index, element) {
                     if (element.classList.contains('jstree-removenode-removed')) {
                         thisJstree.disable_node(element);
-                        thisJstree.get_node(element).children.forEach(function(child_id) {
-                            thisJstree.disable_node(thisJstree.get_node(child_id));
+                        var descendants = thisJstree.get_json(element, { 'flat': true });
+                        $.each(descendants, function (i, node) {
+                            thisJstree.disable_node(thisJstree.get_node(node));
                         })
                     };
                 });

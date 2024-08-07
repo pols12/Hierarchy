@@ -134,7 +134,6 @@ class HierarchyHelper extends AbstractHelper
                     $childNode = $prevNode;
                 } elseif ($childCount >= 1) {
                     // Keep $childNode the same if iterating 'sibling'
-                    $childCount--;
                     continue;
                 } else {
                     $childNode = false;
