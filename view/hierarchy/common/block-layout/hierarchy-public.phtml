@@ -19,7 +19,12 @@
                     // Show (combined child) itemSet count if hierarchy_show_count checked in config
                     $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
                     $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
-                    echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';
+                    if ($itemSetCount != null) {
+                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';
+                    } else {
+                        // Print groupings without assigned itemSet
+                        echo '<li>' . $groupingName;
+                    }
                 } else {
                     try {
                         $itemSet = $this->api()->read('item_sets', $groupingSet)->getContent();
@@ -30,7 +35,8 @@
                         $groupingName = $grouping['data']['label'] ?: $itemSet->displayTitle(null, $valueLang);
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';
                     } catch (NotFoundException $e) {
-                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . '</li>';
+                        // Print groupings without assigned itemSet
+                        echo '<li>' . $groupingName . '</li>';
                     }
                 }
                 if (isset($grouping['children'])) {
