@@ -58,6 +58,18 @@ class Module extends AbstractModule
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
     {
         $sharedEventManager->attach(
+            'Omeka\Form\SiteSettingsForm',
+            'form.add_elements',
+            [$this, 'addSiteSettings']
+        );
+
+        $sharedEventManager->attach(
+            'Omeka\Form\SiteSettingsForm',
+            'form.add_input_filters',
+            [$this, 'addSiteSettingsInputFilters']
+        );
+
+        $sharedEventManager->attach(
             'Omeka\Controller\Admin\Item',
             'view.show.sidebar',
             [$this, 'addItemAdminHierarchies']
@@ -70,21 +82,87 @@ class Module extends AbstractModule
         );
     }
 
-    public function getConfigForm(PhpRenderer $renderer)
+    /**
+     * Add elements to the site settings form.
+     *
+     * @param Event $event
+     */
+    public function addSiteSettings(Event $event)
     {
-        $formElementManager = $this->getServiceLocator()->get('FormElementManager');
-        $form = $formElementManager->get(ConfigForm::class);
-        $html = $renderer->formCollection($form, false);
-        return $html;
+        $services = $this->getServiceLocator();
+        $siteSettings = $services->get('Omeka\Settings\Site');
+        $form = $event->getTarget();
+
+        $groups = $form->getOption('element_groups');
+        $groups['hierarchy'] = 'Hierarchy'; // @translate
+        $form->setOption('element_groups', $groups);
+
+        $form->add([
+            'type' => 'checkbox',
+            'name' => 'hierarchy_show_label',
+            'options' => [
+                        'element_group' => 'hierarchy',
+                        'label' => 'Show hierarchy label', // @translate
+                        'info' => 'If checked, assigned label will display as hierarchy header on public pages.', // @translate
+                    ],
+            'attributes' => [
+                'id' => 'show-label',
+                'value' => $siteSettings->get('hierarchy_show_label', true),
+            ],
+        ]);
+
+        $form->add([
+            'type' => 'checkbox',
+            'name' => 'hierarchy_show_count',
+            'options' => [
+                        'element_group' => 'hierarchy',
+                        'label' => 'Show hierarchy resource counts', // @translate
+                        'info' => 'If checked, hierarchy groupings will show # of resources within currently assigned itemSet.', // @translate
+                    ],
+            'attributes' => [
+                'id' => 'show-count',
+                'value' => $siteSettings->get('hierarchy_show_count', true),
+            ],
+        ]);
+
+        $form->add([
+            'type' => 'checkbox',
+            'name' => 'hierarchy_group_resources',
+            'options' => [
+                        'element_group' => 'hierarchy',
+                        'label' => 'Combine hierarchy resources', // @translate
+                        'info' => 'If checked, groupings will display resources of all child groupings in resource counts and on hierarchy grouping browse pages.', // @translate
+                    ],
+            'attributes' => [
+                'id' => 'group-resources',
+                'value' => $siteSettings->get('hierarchy_group_resources', true),
+            ],
+        ]);
     }
 
-    public function handleConfigForm(AbstractController $controller)
+    /**
+     * Add input filters to the site settings form.
+     *
+     * @param Event $event
+     */
+    public function addSiteSettingsInputFilters(Event $event)
     {
-        $params = $controller->params()->fromPost();
-        $globalSettings = $this->getServiceLocator()->get('Omeka\Settings');
-        $globalSettings->set('hierarchy_show_label', $params['hierarchy_show_label']);
-        $globalSettings->set('hierarchy_group_resources', $params['hierarchy_group_resources']);
-        $globalSettings->set('hierarchy_show_count', $params['hierarchy_show_count']);
+        $inputFilter = $event->getParam('inputFilter');
+        $inputFilter->add([
+            'name' => 'hierarchy_show_label',
+            'required' => false,
+            'allow_empty' => true,
+        ]);
+        $inputFilter->add([
+            'name' => 'hierarchy_show_count',
+            'required' => false,
+            'allow_empty' => true,
+        ]);
+        $inputFilter->add([
+            'name' => 'hierarchy_group_resources',
+            'required' => false,
+            'allow_empty' => true,
+        ]);
     }
 
     // Add relevant hierarchy nested lists to item admin display sidebar

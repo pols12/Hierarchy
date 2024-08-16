@@ -170,8 +170,8 @@ class HierarchyHelper extends AbstractHelper
         $view = $this->getView();
         $itemSetArray = array();
 
-        // Gather all 'child' itemSets if hierarchy_group_resources checked in config
-        if ($view->setting('hierarchy_group_resources')) {
+        // Gather all 'child' itemSets if hierarchy_group_resources checked in site config OR if called from admin side
+        if ($view->status()->isAdminRequest() || $view->siteSetting('hierarchy_group_resources')) {
             $iterate = function ($currentGrouping) use ($view, $allGroupings, &$iterate, &$itemSetArray) {
                 if ($currentGrouping->getItemSet()) {
                     try {
@@ -228,8 +228,8 @@ class HierarchyHelper extends AbstractHelper
                     }
                     $currentHierarchy = $grouping->getHierarchy();
                     echo '<dd class="value"><ul>';
-                    // Show label if hierarchy_show_label checked in config
-                    if ($view->setting('hierarchy_show_label')) {
+                    // Show label if hierarchy_show_label checked in site config OR if called from admin side
+                    if ($view->status()->isAdminRequest() || $view->siteSetting('hierarchy_show_label')) {
                         echo '<dt style="width:unset">' . $currentHierarchy->getLabel() . '</dt>';
                     }
 
@@ -267,8 +267,12 @@ class HierarchyHelper extends AbstractHelper
                 } catch (\Exception $e) {
                     // Print groupings without assigned itemSet
                     $itemSet = null;
-                    // Show (combined child) itemSet count if hierarchy_show_count checked in config
-                    $itemSetCount = $view->setting('hierarchy_show_count') ? $this->itemSetCount($grouping, $allGroupings) : '';
+                    // Show (combined child) itemSet count if hierarchy_show_count checked in site config OR if called from admin side
+                    if ($view->status()->isAdminRequest() || $view->siteSetting('hierarchy_show_count')) {
+                        $itemSetCount = $this->itemSetCount($grouping, $allGroupings);
+                    } else {
+                        $itemSetCount = '';
+                    }
 
                     if ($itemSetCount != null) {
                         if ($public) {
@@ -287,8 +291,12 @@ class HierarchyHelper extends AbstractHelper
                         $itemSetIDArray[] = $itemItemSet->id();
                     }
 
-                    // Show itemSet count if hierarchy_show_count checked in config
-                    $itemSetCount = $view->setting('hierarchy_show_count') ? $this->itemSetCount($grouping, $allGroupings) : '';
+                    // Show (combined child) itemSet count if hierarchy_show_count checked in site config OR if called from admin side
+                    if ($view->status()->isAdminRequest() || $view->siteSetting('hierarchy_show_count')) {
+                        $itemSetCount = $this->itemSetCount($grouping, $allGroupings);
+                    } else {
+                        $itemSetCount = '';
+                    }
 
                     // Bold groupings with current itemSet assigned
                     if (in_array($grouping->getItemSet()->id(), $itemSetIDArray)) {

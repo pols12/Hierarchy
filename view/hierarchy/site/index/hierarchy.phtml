@@ -32,7 +32,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             }
             $currentHierarchy = $grouping->getHierarchy();
             // Show label if hierarchy_show_label checked in config
-            if ($this->setting('hierarchy_show_label')) {
+            if ($this->siteSetting('hierarchy_show_label')) {
                 echo '<dt>' . $currentHierarchy->getLabel() . '</dt>';
             }
             echo '<dd class="value"><span class="value-content"><ul>';
@@ -68,7 +68,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             $itemSet = null;
             $groupingLabel = $grouping->getLabel() ?: ' ';
             // Show (combined child) itemSet count if hierarchy_show_count checked in config
-            $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
+            $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
             if ($itemSetCount != null) {
                 echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
             } else {
@@ -78,7 +78,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
 
         if (!is_null($itemSet)) {
             // Show itemSet count if hierarchy_show_count checked in config
-            $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
+            $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
             // Bold current page grouping
             if ($grouping->id() == $hierarchyGrouping->id()) {
                 echo '<li><b>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;

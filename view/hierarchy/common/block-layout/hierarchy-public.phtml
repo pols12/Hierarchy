@@ -5,7 +5,7 @@
     $valueLang = $filterLocale ? [$lang, ''] : null;
 
     // Show label if hierarchy_show_label checked in config
-     if ($this->setting('hierarchy_show_label')) {
+     if ($this->siteSetting('hierarchy_show_label')) {
          echo '<h4>' . $hierarchy->getLabel() . '</h4>';
      }
     ?>
@@ -18,7 +18,7 @@
                 if (empty($groupingSet)) {
                     // Show (combined child) itemSet count if hierarchy_show_count checked in config
                     $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
-                    $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
+                    $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
                     if ($itemSetCount != null) {
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';
                     } else {
@@ -30,7 +30,7 @@
                         $itemSet = $this->api()->read('item_sets', $groupingSet)->getContent();
                         // Show itemSet count if hierarchy_show_count checked in config
                         $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
-                        $itemSetCount = $this->setting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
+                        $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
                         // If no grouping label, show itemSet title as grouping heading
                         $groupingName = $grouping['data']['label'] ?: $itemSet->displayTitle(null, $valueLang);
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';

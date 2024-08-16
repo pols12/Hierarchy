@@ -47,11 +47,6 @@ return [
             OMEKA_PATH . '/modules/Hierarchy/data/doctrine-proxies',
         ],
     ],
-    'form_elements' => [
-        'factories' => [
-            'Hierarchy\Form\ConfigForm' => 'Hierarchy\Service\Form\ConfigFormFactory',
-        ],
-    ],
     'router' => [
         'routes' => [
             'admin' => [
