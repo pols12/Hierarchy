@@ -1,0 +1,94 @@
+<?php
+$form->prepare();
+$this->headScript()->appendFile($this->assetUrl('vendor/sortablejs/Sortable.min.js', 'Omeka'));
+$this->htmlElement('body')->appendAttribute('class', 'sites resources');
+
+$rowTemplate = '
+<tr class="resource-row">
+    <td class="sortable-handle"></td>
+    <td class="data-value" data-row-key="child-search"></td>
+    <td></td>
+    <td>
+' . $this->hyperlink('', '#', ['class' => 'o-icon-delete', 'title' => $this->translate('Remove hierarchy')])
+  . '<input type="hidden" class="resource-id" name="site_hierarchies[]">
+    </td>
+</tr>';
+?>
+
+
+<?php echo $this->pageTitle($this->translate('Site Hierarchies'), 1, $this->translate('Sites')); ?>
+
+<?php echo $this->form()->openTag($form); ?>
+
+<div id="page-actions">
+    <button><?php echo $this->translate('Save'); ?></button>
+</div>
+
+<table id="site-hierarchies" class="selector-table tablesaw tablesaw-stack <?php echo ((count($siteHierarchies) > 0)) ? '' : 'empty'; ?>"
+    data-tablesaw-mode="stack"
+    data-existing-rows="<?php echo $this->escapeHtml(json_encode($siteHierarchies)); ?>"
+    data-row-template="<?php echo $this->escapeHtml($rowTemplate); ?>">
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('Site Hierarchies'); ?></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody class="resource-rows"></tbody>
+</table>
+<div class="no-resources"><?php echo $this->translate('No hierarchies are assigned to this site.'); ?></div>
+
+<div id="hierarchy-selector" class='hierarchy-selector selector sidebar active'>
+    <a href="#" class="mobile-only sidebar-close o-icon-close"><span class="screen-reader-text"><?php echo $this->translate('Close'); ?></span></a>
+    <div class="resources-available" data-all-resources-count="<?php echo count($allHierarchies); ?>">
+        <h3><?php echo $this->translate('Click on a hierarchy to add it to the edit panel.'); ?></h3>
+        <input type="text" class="selector-filter" placeholder=" <?php echo $this->escapeHtml($this->translate('Filter hierarchies')); ?>">
+        <ul>
+            <li class="total-count-heading"><?php echo $this->translate('Hierarchies'); ?> (<span class="selector-total-count"><?php echo count($allHierarchies); ?></span>)
+                <ul class="selectable-list">
+                    <li class='selector-parent show'>
+                        <ul>
+                            <?php foreach ($allHierarchies as $key => $value): ?>
+                            <li class='selector-child'
+                                data-child-search="<?php echo $this->escapeHtml($value); ?>"
+                                data-resource-id="<?php echo $this->escapeHtml($key); ?>">
+                                <div class="description"></div>
+                                <span><?php echo $this->escapeHtml($value); ?></span>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="resources-unavailable">
+        <p><?php echo sprintf('All %s have been added.', 'hierarchies'); ?></p>
+    </div>
+</div>
+
+<?php echo $this->form()->closeTag($form); ?>
+
+<script>
+(function($) {
+    $(document).ready(function() {
+        new Sortable(document.querySelector('#site-hierarchies .resource-rows'), {
+            draggable: '.resource-row',
+            handle: '.sortable-handle',
+        });
+
+        Omeka.initializeSelector('#site-hierarchies', '#hierarchy-selector');
+    });
+})(jQuery)
+</script>
+
+<style>
+.selector .selectable-list .selector-parent:after {
+    content:none;
+}
+.selector .selectable-list .selector-parent.show:after {
+    content:none;
+}
+</style>

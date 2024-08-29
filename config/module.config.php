@@ -21,6 +21,7 @@ return [
     'controllers' => [
         'invokables' => [
             'Hierarchy\Controller\Index' => 'Hierarchy\Controller\IndexController',
+            'Hierarchy\Controller\SiteAdmin\Index' => 'Hierarchy\Controller\SiteAdmin\IndexController',
             'Hierarchy\Controller\Site\Index' => 'Hierarchy\Controller\Site\IndexController',
         ],
     ],
@@ -74,6 +75,26 @@ return [
                             ],
                         ],
                     ],
+                    'site' => [
+                        'child_routes' => [
+                            'slug' => [
+                                'child_routes' => [
+                                    'hierarchy' => [
+                                        'type' => 'Literal',
+                                        'options' => [
+                                            'route' => '/hierarchy',
+                                            'defaults' => [
+                                                '__NAMESPACE__' => 'Hierarchy\Controller\SiteAdmin',
+                                                'controller' => 'index',
+                                                'action' => 'index',
+                                            ],
+                                        ],
+                                        'may_terminate' => true,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'site' => [
@@ -99,6 +120,21 @@ return [
                 'label' => 'Hierarchy', // @translate
                 'route' => 'admin/hierarchy',
                 'resource' => 'Hierarchy\Controller\Index',
+            ],
+        ],
+        'site' => [
+            [
+                'label' => 'Hierarchy', // @translate
+                'route' => 'admin/site/slug/hierarchy',
+                'action' => 'index',
+                'useRouteMatch' => true,
+                'resource' => 'Hierarchy\Controller\SiteAdmin\Index',
+                'pages' => [
+                    [
+                        'route' => 'admin/site/slug/hierarchy',
+                        'visible' => false,
+                    ],
+                ],
             ],
         ],
     ],
