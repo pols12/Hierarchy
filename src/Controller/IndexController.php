@@ -28,13 +28,27 @@ class IndexController extends AbstractActionController
                 $form->setData($formData);
                 if ($form->isValid()) {
                     unset($formData['form_csrf']);
-                    foreach($formData['hierarchy'] as $hierarchyData) {
+                    foreach ($formData['hierarchy'] as $hierarchyData) {
                         // Check if hierarchy already exists before adding/removing/updating
                         $hierarchyID = $hierarchyData['id'] ?: 0;
                         $content = $this->api()->searchOne('hierarchy', ['id' => $hierarchyID])->getContent();
                         if (!empty($hierarchyData['delete'])) {
                             if (!empty($content)) {
                                 $response = $this->api($form)->delete('hierarchy', $hierarchyData['id']);
+
+                                // Remove hierarchy from any sites it is assigned to
+                                $siteSettings = $this->siteSettings();
+                                $sites = $this->api()->search('sites')->getContent();
+                                foreach ($sites as $site) {
+                                    $newSiteHierarchies = [];
+                                    $siteHierarchyArray = $siteSettings->get('site_hierarchies', '', $site->id());
+                                    foreach ($siteHierarchyArray as $siteHierarchy) {
+                                        if ($siteHierarchy['id'] != $hierarchyData['id']) {
+                                            $newSiteHierarchies[] = $siteHierarchy;
+                                        }
+                                    }
+                                    $siteSettings->set('site_hierarchies', $newSiteHierarchies, $site->id());
+                                }
                             } else {
                                 continue;
                             }
