@@ -20,12 +20,27 @@ class Hierarchy extends AbstractBlockLayout
 	public function form(PhpRenderer $view, SiteRepresentation $site,
         SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
     ) {
-        $hierarchies = $view->api()->search('hierarchy', ['sort_by' => 'position'])->getContent();
-		
+        $allHierarchies = $view->api()->search('hierarchy', ['sort_by' => 'position'])->getContent();
+
+		// Only show groupings/hierarchies assigned by Hierarchy option in site's context menu
+		$siteHierarchiesArray = $view->siteSetting('site_hierarchies');
+		$hierarchies = array();
+	    foreach ($allHierarchies as $hierarchy) {
+			foreach ($siteHierarchiesArray as $siteHierarchy) {
+		        if ($hierarchy->id() == $siteHierarchy['id']) {
+		            $hierarchies[] = $hierarchy;
+		        }
+		    }
+		}
+
 		$options = [];
 		foreach ($hierarchies as $hierarchy) {
             $options[$hierarchy->id()] = $hierarchy->getLabel();
         }
+
+		if (count($hierarchies) === 0) {
+			$options[] = $view->translate('(No site hierarchies assigned)');
+		}
 
         $setHierarchy = $block ? $block->dataValue('Hierarchy') : '';
 

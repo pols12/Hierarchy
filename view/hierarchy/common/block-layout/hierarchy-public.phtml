@@ -5,9 +5,9 @@
     $valueLang = $filterLocale ? [$lang, ''] : null;
 
     // Show label if hierarchy_show_label checked in config
-     if ($this->siteSetting('hierarchy_show_label')) {
-         echo '<h4>' . $hierarchy->getLabel() . '</h4>';
-     }
+    if ($this->siteSetting('hierarchy_show_label')) {
+        echo '<h4>' . $hierarchy->getLabel() . '</h4>';
+    }
     ?>
     <ul>
         <?php $iterate = function ($groupings) use (&$iterate, $allGroupings, $valueLang) {

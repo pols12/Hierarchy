@@ -26,12 +26,22 @@ foreach ($itemSets as $itemSet) {
     if (is_numeric($itemSet)) {
         continue;
     }
-    $groupings[] = $api->search('hierarchy_grouping', ['item_set' => $itemSet->id(), 'sort_by' => 'position'])->getContent();
+    $groupings = $api->search('hierarchy_grouping', ['item_set' => $itemSet->id(), 'sort_by' => 'position'])->getContent();
+}
+
+// Only show groupings/hierarchies assigned by Hierarchy option in site's context menu
+$siteHierarchiesArray = $this->siteSetting('site_hierarchies');
+$siteGroupings = array();
+foreach ($groupings as $grouping) {
+    foreach ($siteHierarchiesArray as $siteHierarchy) {
+        if ($grouping->getHierarchy()->getId() == $siteHierarchy['id']) {
+            $siteGroupings[][] = $grouping;
+        }
+    }
 }
 
 // Return if no groupings/hierarchies found
-$groupings = array_filter($groupings);
-if (!$groupings) {
+if (!$siteGroupings) {
     return;
 }
 ?>
@@ -39,8 +49,8 @@ if (!$groupings) {
 <dl class="hierarchies">
     <div class="property">
         <dt><?php echo $this->translate('Hierarchies'); ?></dt>
-            <?php foreach ($groupings as $grouping): ?>
-            <?php echo $this->hierarchyHelper()->buildNestedList($grouping, $itemSet, $item, true); ?>
+            <?php foreach ($siteGroupings as $groupings): ?>
+            <?php echo $this->hierarchyHelper()->buildNestedList($groupings, $itemSet, $item, true); ?>
             <?php endforeach; ?>
     </div>
 </dl>
