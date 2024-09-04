@@ -21,21 +21,20 @@ if (!$itemSets) {
 $itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
 $itemSets = !empty($item) ? array_replace(array_flip($itemSetOrder), $item->itemSets()) : $itemSets;
 
+$siteHierarchiesArray = $this->siteSetting('site_hierarchies');
+$siteGroupings = array();
 $groupings = array();
 foreach ($itemSets as $itemSet) {
     if (is_numeric($itemSet)) {
         continue;
     }
     $groupings = $api->search('hierarchy_grouping', ['item_set' => $itemSet->id(), 'sort_by' => 'position'])->getContent();
-}
-
-// Only show groupings/hierarchies assigned by Hierarchy option in site's context menu
-$siteHierarchiesArray = $this->siteSetting('site_hierarchies');
-$siteGroupings = array();
-foreach ($groupings as $grouping) {
-    foreach ($siteHierarchiesArray as $siteHierarchy) {
-        if ($grouping->getHierarchy()->getId() == $siteHierarchy['id']) {
-            $siteGroupings[][] = $grouping;
+    // Only show groupings/hierarchies assigned by Hierarchy option in site's context menu
+    foreach ($groupings as $grouping) {
+        foreach ($siteHierarchiesArray as $siteHierarchy) {
+            if ($grouping->getHierarchy()->getId() == $siteHierarchy['id']) {
+                $siteGroupings[][] = $grouping;
+            }
         }
     }
 }
