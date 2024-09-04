@@ -53,6 +53,18 @@ class Module extends AbstractModule
         $connection->exec('ALTER TABLE hierarchy_grouping DROP FOREIGN KEY FK_DCDE57FF582A8328');
         $connection->exec('DROP TABLE hierarchy');
         $connection->exec('DROP TABLE hierarchy_grouping');
+        
+        $api = $serviceLocator->get('Omeka\ApiManager');
+        $sites = $api->search('sites', [])->getContent();
+        $siteSettings = $serviceLocator->get('Omeka\Settings\Site');
+
+        foreach ($sites as $site) {
+            $siteSettings->setTargetId($site->id());
+            $siteSettings->delete('hierarchy_show_label');
+            $siteSettings->delete('hierarchy_show_count');
+            $siteSettings->delete('hierarchy_group_resources');
+            $siteSettings->delete('site_hierarchies');
+        }
     }
 
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
