@@ -44,6 +44,18 @@ class Module extends AbstractModule
         $connection->exec('CREATE TABLE hierarchy (id INT AUTO_INCREMENT NOT NULL, `label` VARCHAR(255) DEFAULT NULL, position INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;');
         $connection->exec('ALTER TABLE hierarchy_grouping ADD CONSTRAINT FK_DCDE57FF960278D7 FOREIGN KEY (item_set_id) REFERENCES item_set (id) ON DELETE SET NULL;');
         $connection->exec('ALTER TABLE hierarchy_grouping ADD CONSTRAINT FK_DCDE57FF582A8328 FOREIGN KEY (hierarchy_id) REFERENCES hierarchy (id) ON DELETE CASCADE;');
+
+        $api = $serviceLocator->get('Omeka\ApiManager');
+        $sites = $api->search('sites', [])->getContent();
+        $siteSettings = $serviceLocator->get('Omeka\Settings\Site');
+
+        // Turn all hierarchy site view settings on by default
+        foreach ($sites as $site) {
+            $siteSettings->setTargetId($site->id());
+            $siteSettings->set('hierarchy_show_label', '1');
+            $siteSettings->set('hierarchy_show_count', '1');
+            $siteSettings->set('hierarchy_group_resources', '1');
+        }
     }
     
     public function uninstall(ServiceLocatorInterface $serviceLocator)
