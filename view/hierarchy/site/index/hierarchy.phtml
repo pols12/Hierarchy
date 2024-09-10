@@ -68,9 +68,22 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             $itemSet = null;
             $groupingLabel = $grouping->getLabel() ?: ' ';
             // Show (combined child) itemSet count if hierarchy_show_count checked in config
-            $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
-            if ($itemSetCount != null) {
-                echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+            $itemSetCount = $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings);
+
+            if ($this->siteSetting('hierarchy_show_count') && $itemSetCount != null) {
+                // Bold current page grouping
+                if ($grouping->id() == $hierarchyGrouping->id()) {
+                    echo '<li><b>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;
+                } else {
+                    echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+                }
+            } else if ($itemSetCount != null) {
+                // Bold current page grouping
+                if ($grouping->id() == $hierarchyGrouping->id()) {
+                    echo '<li><b>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>';
+                } else {
+                    echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()]));
+                }
             } else {
                 echo '<li>' . $groupingLabel;
             }
