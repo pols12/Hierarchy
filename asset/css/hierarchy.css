@@ -1,0 +1,38 @@
+#site-hierarchies:not(.empty) .no-resources {
+    display: none;
+}
+
+#site-hierarchies .row {
+    display: flex;
+}
+
+#hierarchy-selector.selector .selectable-list .selector-parent {
+    padding-top: 0;
+}
+
+#hierarchy-selector.selector .selectable-list .selector-parent:hover:before {
+    content: none;
+}
+
+#hierarchy-selector.selector .selectable-list .selector-child {
+    color: #676767;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+#hierarchy-selector.selector .selectable-list .selector-child:not(:last-of-type) {
+    border-bottom: 1px solid #dfdfdf;
+    padding-bottom: 5px;
+    border-color: #dfdfdf;
+}
+
+#hierarchy-selector.selector .selectable-list .selector-child:hover:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px;
+    background-color: #dfdfdf;
+}

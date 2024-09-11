@@ -1,18 +1,18 @@
 <?php
 $form->prepare();
+$this->headLink()->appendStylesheet($this->assetUrl('css/hierarchy.css', 'Hierarchy'));
 $this->headScript()->appendFile($this->assetUrl('vendor/sortablejs/Sortable.min.js', 'Omeka'));
 $this->htmlElement('body')->appendAttribute('class', 'sites resources');
 
 $rowTemplate = '
-<tr class="resource-row">
-    <td class="sortable-handle"></td>
-    <td class="data-value" data-row-key="child-search"></td>
-    <td></td>
-    <td>
+<div class="resource-row row">
+    <span class="sortable-handle"></span>
+    <span class="data-value" data-row-key="child-search"></span>
+    <ul class="actions"><li>
 ' . $this->hyperlink('', '#', ['class' => 'o-icon-delete', 'title' => $this->translate('Remove hierarchy')])
   . '<input type="hidden" class="resource-id" name="site_hierarchies[]">
-    </td>
-</tr>';
+    </li></ul>
+</div>';
 ?>
 
 
@@ -24,21 +24,12 @@ $rowTemplate = '
     <button><?php echo $this->translate('Save'); ?></button>
 </div>
 
-<table id="site-hierarchies" class="selector-table tablesaw tablesaw-stack <?php echo ((count($siteHierarchies) > 0)) ? '' : 'empty'; ?>"
-    data-tablesaw-mode="stack"
+<div id="site-hierarchies" class="selector-rows <?php echo ((count($siteHierarchies) > 0)) ? '' : 'empty'; ?>"
     data-existing-rows="<?php echo $this->escapeHtml(json_encode($siteHierarchies)); ?>"
     data-row-template="<?php echo $this->escapeHtml($rowTemplate); ?>">
-    <thead>
-        <tr>
-            <th><?php echo $site->title() . $this->translate(' Hierarchies'); ?></th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody class="resource-rows"></tbody>
-</table>
-<div class="no-resources"><?php echo $this->translate('No hierarchies are assigned to this site.'); ?></div>
+    <div class="resource-rows"></div>
+    <div class="no-resources"><?php echo $this->translate('No hierarchies are assigned to this site.'); ?></div>
+</div>
 
 <div id="hierarchy-selector" class='hierarchy-selector selector sidebar active'>
     <a href="#" class="mobile-only sidebar-close o-icon-close"><span class="screen-reader-text"><?php echo $this->translate('Close'); ?></span></a>
