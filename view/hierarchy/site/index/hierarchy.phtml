@@ -2,17 +2,17 @@
 $translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
 $thumbnail = $this->plugin('thumbnail');
-$this->htmlElement('body')->appendAttribute('class', 'item resource browse');
-
 $filterLocale = (bool) $this->siteSetting('filter_locale_values');
 $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
-
 $query = $this->params()->fromQuery();
+
+$this->headLink()->appendStylesheet($this->assetUrl('css/hierarchy.css', 'Hierarchy'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
-$this->htmlElement('body')->appendAttribute('class', 'item-set');
+$this->htmlElement('body')->appendAttribute('class', 'item resource browse hierarchy-module');
 ?>
 
+<div class="hierarchy-row">
 <?php
 if ($hierarchyGrouping->getLabel()) {
     echo $this->pageTitle($hierarchyGrouping->getLabel(), 2);
@@ -28,14 +28,14 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
 
         if ($currentHierarchy != $grouping->getHierarchy()) {
             if (!is_null($currentHierarchy)) {
-                echo '</ul></span></dd>';
+                echo '</ul>';
             }
             $currentHierarchy = $grouping->getHierarchy();
             // Show label if hierarchy_show_label checked in config
             if ($this->siteSetting('hierarchy_show_label')) {
-                echo '<dt>' . $currentHierarchy->getLabel() . '</dt>';
+                echo '<h2>' . $currentHierarchy->getLabel() . '</h2>';
             }
-            echo '<dd class="value"><span class="value-content"><ul>';
+            echo '<ul class="hierarchy-list">';
 
             $allGroupings = $this->api()->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
             $iterate($allGroupings, $itemSet);
@@ -134,41 +134,45 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
 
 $groupings = $this->api()->search('hierarchy_grouping', ['id' => $hierarchyGrouping->id(), 'sort_by' => 'position'])->getContent();
 if ($groupings) {
-    echo '<div class="metadata">';
+    echo '<div class="hierarchy-filters">';
     $iterate($groupings, $itemSet);
-    echo '</span></dd></div>';
+    echo '</div>';
 }
 ?>
-<div class="item-set-items">
-<?php echo '<h3>' . $escape($translate('Items')) . '</h3>'; ?>
 
-<?php echo $this->searchFilters(); ?>
+    <div class="hierarchy-items">
+        <?php echo '<h3>' . $escape($translate('Items')) . '</h3>'; ?>
 
-<div class="browse-controls">
-    <?php echo $this->pagination(); ?>
-    <?php echo $this->hyperlink($translate('Advanced search'), $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], true), ['class' => 'advanced-search']); ?>
-    <?php echo $this->browse()->renderSortSelector('items'); ?>
-</div>
+        <?php echo $this->searchFilters(); ?>
 
-<?php $this->trigger('view.browse.before'); ?>
-<ul class="resource-list">
-<?php
-$headingTerm = $this->siteSetting('browse_heading_property_term');
-$bodyTerm = $this->siteSetting('browse_body_property_term');
-foreach ($items as $item):
-    $heading = $headingTerm ? $item->value($headingTerm, ['default' => $translate('[Untitled]'), 'lang' => $valueLang]) : $item->displayTitle(null, $valueLang);
-    $body = $bodyTerm ? $item->value($bodyTerm, ['lang' => $valueLang]) : $item->displayDescription(null, $valueLang);
-?>
-    <li class="item resource">
+        <div class="browse-controls">
+            <?php echo $this->pagination(); ?>
+            <?php echo $this->hyperlink($translate('Advanced search'), $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], true), ['class' => 'advanced-search']); ?>
+            <?php echo $this->browse()->renderSortSelector('items'); ?>
+        </div>
+
+        <?php $this->trigger('view.browse.before'); ?>
+        <ul class="resource-list">
         <?php
-        $linkContent = sprintf('%s<span class="resource-name">%s</span>',
-            $thumbnail($item, 'medium'),
-            $escape($heading));
-        echo $item->linkRaw($linkContent, null, ['class' => 'resource-link']);
+        $headingTerm = $this->siteSetting('browse_heading_property_term');
+        $bodyTerm = $this->siteSetting('browse_body_property_term');
+        foreach ($items as $item):
+            $heading = $headingTerm ? $item->value($headingTerm, ['default' => $translate('[Untitled]'), 'lang' => $valueLang]) : $item->displayTitle(null, $valueLang);
+            $body = $bodyTerm ? $item->value($bodyTerm, ['lang' => $valueLang]) : $item->displayDescription(null, $valueLang);
         ?>
-    </li>
-<?php endforeach; ?>
-</ul>
-<?php echo '</div>'; ?>
-<?php $this->trigger('view.browse.after'); ?>
-<?php echo $this->pagination(); ?>
+            <li class="item resource">
+                <?php
+                $linkContent = sprintf('%s<span class="resource-name">%s</span>',
+                    $thumbnail($item, 'medium'),
+                    $escape($heading));
+                echo $item->linkRaw($linkContent, null, ['class' => 'resource-link']);
+                ?>
+            </li>
+        <?php endforeach; ?>
+        </ul>
+        <div class="browse-controls">
+            <?php echo $this->pagination(); ?>
+        </div>
+        <?php $this->trigger('view.browse.after'); ?>
+    </div>
+</div>
