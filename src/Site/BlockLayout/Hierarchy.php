@@ -24,13 +24,16 @@ class Hierarchy extends AbstractBlockLayout
 
 		// Only show groupings/hierarchies assigned by Hierarchy option in site's context menu
 		$siteHierarchiesArray = $view->siteSetting('site_hierarchies');
+
 		$hierarchies = array();
 	    foreach ($allHierarchies as $hierarchy) {
-			foreach ($siteHierarchiesArray as $siteHierarchy) {
-		        if ($hierarchy->id() == $siteHierarchy['id']) {
-		            $hierarchies[] = $hierarchy;
-		        }
-		    }
+			if ($siteHierarchiesArray) {
+				foreach ($siteHierarchiesArray as $siteHierarchy) {
+			        if ($hierarchy->id() == $siteHierarchy['id']) {
+			            $hierarchies[] = $hierarchy;
+			        }
+			    }
+			}
 		}
 
 		$options = [];
