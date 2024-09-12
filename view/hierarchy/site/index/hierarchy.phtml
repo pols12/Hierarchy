@@ -6,20 +6,23 @@ $filterLocale = (bool) $this->siteSetting('filter_locale_values');
 $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
 $query = $this->params()->fromQuery();
+$hierarchyHeadingLevel = "h2";
 
 $this->headLink()->appendStylesheet($this->assetUrl('css/hierarchy.css', 'Hierarchy'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
 $this->htmlElement('body')->appendAttribute('class', 'item resource browse hierarchy-module');
 ?>
-
-<div class="hierarchy-row">
 <?php
 if ($hierarchyGrouping->getLabel()) {
     echo $this->pageTitle($hierarchyGrouping->getLabel(), 2);
+    $hierarchyHeadingLevel = 'h3';
 }
+?>
 
+<div class="hierarchy-row">
+<?php 
 // Iterate through groupings to create nested list in metadata sidebar
-$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $hierarchyGrouping, $valueLang) {
+$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $hierarchyGrouping, $valueLang, $hierarchyHeadingLevel) {
     foreach ($groupings as $key => $grouping) {
         // Continue if grouping has already been printed
         if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -33,7 +36,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             $currentHierarchy = $grouping->getHierarchy();
             // Show label if hierarchy_show_label checked in config
             if ($this->siteSetting('hierarchy_show_label')) {
-                echo '<h2>' . $currentHierarchy->getLabel() . '</h2>';
+                echo "<$hierarchyHeadingLevel>" . $currentHierarchy->getLabel() . "</$hierarchyHeadingLevel>";
             }
             echo '<ul class="hierarchy-list">';
 
