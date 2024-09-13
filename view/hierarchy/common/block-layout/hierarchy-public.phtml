@@ -4,8 +4,8 @@
     $lang = $this->lang();
     $valueLang = $filterLocale ? [$lang, ''] : null;
 
-    // Show label if hierarchy_show_label checked in config
-    if ($this->siteSetting('hierarchy_show_label')) {
+    // Show label if hierarchy_show_label checked in config and hierarchy label exists
+    if ($this->siteSetting('hierarchy_show_label') && $hierarchy->getLabel()) {
         echo '<h4>' . $hierarchy->getLabel() . '</h4>';
     }
     ?>

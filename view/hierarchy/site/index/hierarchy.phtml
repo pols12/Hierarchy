@@ -35,7 +35,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             }
             $currentHierarchy = $grouping->getHierarchy();
             // Show label if hierarchy_show_label checked in config
-            if ($this->siteSetting('hierarchy_show_label')) {
+            if ($this->siteSetting('hierarchy_show_label') && $currentHierarchy->getLabel()) {
                 echo "<$hierarchyHeadingLevel>" . $currentHierarchy->getLabel() . "</$hierarchyHeadingLevel>";
             }
             echo '<ul class="hierarchy-list">';

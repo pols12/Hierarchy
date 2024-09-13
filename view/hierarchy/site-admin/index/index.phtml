@@ -42,6 +42,7 @@ $rowTemplate = '
                     <li class='selector-parent show'>
                         <ul>
                             <?php foreach ($allHierarchies as $key => $value): ?>
+                            <?php $value = $value ?: '[Untitled]'; ?>
                             <li class='selector-child'
                                 data-child-search="<?php echo $this->escapeHtml($value); ?>"
                                 data-resource-id="<?php echo $this->escapeHtml($key); ?>">

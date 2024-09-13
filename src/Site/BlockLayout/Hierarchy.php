@@ -38,7 +38,7 @@ class Hierarchy extends AbstractBlockLayout
 
 		$options = [];
 		foreach ($hierarchies as $hierarchy) {
-            $options[$hierarchy->id()] = $hierarchy->getLabel();
+            $options[$hierarchy->id()] = $hierarchy->getLabel() ?: '[Untitled]';
         }
 
 		if (count($hierarchies) === 0) {
