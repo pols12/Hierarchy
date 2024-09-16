@@ -1,4 +1,5 @@
-<div>
+<?php $this->headLink()->appendStylesheet($this->assetUrl('css/hierarchy.css', 'Hierarchy')); ?>
+<div class="hierarchy-filters">
     <?php
     $filterLocale = (bool) $this->siteSetting('filter_locale_values');
     $lang = $this->lang();
@@ -9,7 +10,7 @@
         echo '<h4>' . $hierarchy->getLabel() . '</h4>';
     }
     ?>
-    <ul>
+    <ul class="hierarchy-list">
         <?php $iterate = function ($groupings) use (&$iterate, $allGroupings, $valueLang) {
             foreach ($groupings as $grouping) {
                 $groupingName = $grouping['data']['label'] ?: ' ';
@@ -33,7 +34,7 @@
                         $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
                         // If no grouping label, show itemSet title as grouping heading
                         $groupingName = $grouping['data']['label'] ?: $itemSet->displayTitle(null, $valueLang);
-                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';
+                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
                     } catch (NotFoundException $e) {
                         // Print groupings without assigned itemSet
                         echo '<li>' . $groupingName . '</li>';
