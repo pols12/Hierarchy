@@ -10,6 +10,7 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         $site = $this->currentSite();
+        $this->setBrowseDefaults('');
 
         // Retrieve grouping given in URL
         $grouping = $this->params('grouping-id') ? $this->api()->read('hierarchy_grouping', $this->params('grouping-id'))->getContent() : '';
@@ -26,7 +27,8 @@ class IndexController extends AbstractActionController
         $query = $this->params()->fromQuery();
         $query['item_set_id'] = $itemSetIDArray;
         $response = $this->api()->search('items', $query);
-        $this->paginator($response->getTotalResults());
+        $page = $this->params()->fromQuery('page', 1);
+        $this->paginator($response->getTotalResults(), $page);
         $items = $response->getContent();
         $siteSlug = $this->params('site-slug');
         
