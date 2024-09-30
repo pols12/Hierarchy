@@ -48,8 +48,10 @@ if (!$siteGroupings) {
 <dl class="hierarchies">
     <div class="property">
         <dt><?php echo $this->translate('Hierarchies'); ?></dt>
+        <dd class="value">
             <?php foreach ($siteGroupings as $groupings): ?>
             <?php echo $this->hierarchyHelper()->buildNestedList($groupings, $itemSet, $item, true); ?>
             <?php endforeach; ?>
+        </dd>
     </div>
 </dl>

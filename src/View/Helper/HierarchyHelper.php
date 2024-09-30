@@ -208,6 +208,7 @@ class HierarchyHelper extends AbstractHelper
     public function buildNestedList(array $groupings, $currentItemSet, $item = null, $public = false)
     {
         $view = $this->getView();
+        $view->headLink()->appendStylesheet($view->assetUrl('css/hierarchy.css', 'Hierarchy'));
         $filterLocale = (bool) $view->siteSetting('filter_locale_values');
         $lang = $view->lang();
         $valueLang = $filterLocale ? [$lang, ''] : null;
@@ -224,14 +225,14 @@ class HierarchyHelper extends AbstractHelper
                 if ($currentHierarchy != $grouping->getHierarchy()) {
                     // Close HTML list and value if previous hierarchy or itemSet iteration
                     if (isset($currentHierarchy) || $itemSetCounter > 1) {
-                        echo '</ul></dd>';
+                        echo '</ul>';
                     }
                     $currentHierarchy = $grouping->getHierarchy();
-                    echo '<dd class="value"><ul>';
-                    // Show label if hierarchy_show_label checked in site config OR if called from admin side
                     if ($view->status()->isAdminRequest() || $view->siteSetting('hierarchy_show_label')) {
-                        echo '<dt style="width:unset">' . $currentHierarchy->getLabel() . '</dt>';
+                        echo '<span class="hierarchy-label">' . $currentHierarchy->getLabel() . '</span>';
                     }
+                    echo '<ul class="hierarchy-list">';
+                    // Show label if hierarchy_show_label checked in site config OR if called from admin side
 
                     $allGroupings = $this->getView()->api()->search('hierarchy_grouping', ['hierarchy' => $currentHierarchy, 'sort_by' => 'position'])->getContent();
                     $iterate($allGroupings, $currentItemSet);
