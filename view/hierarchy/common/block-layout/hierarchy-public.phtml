@@ -7,7 +7,7 @@
 
     // Show label if hierarchy_show_label checked in config and hierarchy label exists
     if ($this->siteSetting('hierarchy_show_label') && $hierarchy->getLabel()) {
-        echo '<h4>' . $hierarchy->getLabel() . '</h4>';
+        echo '<span class="hierarchy-label">' . $hierarchy->getLabel() . '</span>';
     }
     ?>
     <ul class="hierarchy-list">

@@ -70,14 +70,23 @@
     }
 }
 
+span.hierarchy-label {
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: .5rem;
+}
+
+.value span.hierarchy-label {
+    font-weight: normal;
+}
+
 ul.hierarchy-list {
-    padding-left: 0;
-    margin-left: 0;
-    list-style: none;
+    margin: 0 0 2rem .5rem;
     width: 100%;
 }
 
-ul.hierarchy-list ul {
+.hierarchy-filters ul,
+.hierarchies ul {
     list-style: none;
     margin-left: .5rem;
     padding: 0;
@@ -85,15 +94,11 @@ ul.hierarchy-list ul {
     border-left: 3px solid var(--hierarchy-border-color);
 }
 
-ul.hierarchy-list > li {
-    padding-left: 0;
-}
-
 ul.hierarchy-list li {
     position: relative;
 }
 
-ul.hierarchy-list ul li:before {
+ul.hierarchy-list li:before {
     content: "";
     display: block;
     position: absolute;
@@ -104,7 +109,11 @@ ul.hierarchy-list ul li:before {
     left: 0;
 }
 
-ul.hierarchy-list ul li {
+ul.hierarchy-list li {
     padding: 0 0 0 1rem;
     margin-top: .5rem;
+}
+
+ul.hierarchy-list > li:first-child {
+    margin-top: 0;
 }
