@@ -13,7 +13,7 @@
     <ul class="hierarchy-list">
         <?php $iterate = function ($groupings) use (&$iterate, $allGroupings, $valueLang) {
             foreach ($groupings as $grouping) {
-                $groupingName = $grouping['data']['label'] ?: ' ';
+                $groupingName = $grouping['data']['label'] ?: '';
                 $groupingSet = $grouping['data']['itemSet'];
                 $groupingID = $grouping['data']['groupingID'];
                 if (empty($groupingSet)) {
@@ -22,7 +22,7 @@
                     $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
                     if ($itemSetCount != null) {
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';
-                    } else {
+                    } else if (!empty($groupingName)) {
                         // Print groupings without assigned itemSet
                         echo '<li>' . $groupingName;
                     }
@@ -37,7 +37,9 @@
                         echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
                     } catch (NotFoundException $e) {
                         // Print groupings without assigned itemSet
-                        echo '<li>' . $groupingName . '</li>';
+                        if (!empty($groupingName)) {
+                            echo '<li>' . $groupingName . '</li>';
+                        }
                     }
                 }
                 if (isset($grouping['children'])) {

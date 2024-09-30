@@ -256,10 +256,10 @@ class HierarchyHelper extends AbstractHelper
                         $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
                     } catch (\Exception $e) {
                         // itemSet not found or private
-                        $groupingLabel = $grouping->getLabel() ?: '_';
+                        $groupingLabel = $grouping->getLabel() ?: '';
                     }
                 } else {
-                    $groupingLabel = $grouping->getLabel() ?: '_';
+                    $groupingLabel = $grouping->getLabel() ?: '';
                 }
 
                 try {
@@ -281,7 +281,7 @@ class HierarchyHelper extends AbstractHelper
                         } else {
                             echo '<li>' . $groupingLabel . $itemSetCount;
                         }
-                    } else {
+                    } else if (!empty($groupingLabel)) {
                         echo '<li>' . $groupingLabel;
                     }
                 }
