@@ -64,12 +64,12 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             } catch (\Exception $e) {
                 // Print groupings with private itemSet
                 $itemSet = '';
-                $groupingLabel = $grouping->getLabel() ?: ' ';
+                $groupingLabel = $grouping->getLabel() ?: '';
             }
         } else {
             // Print groupings without assigned itemSet
             $itemSet = null;
-            $groupingLabel = $grouping->getLabel() ?: ' ';
+            $groupingLabel = $grouping->getLabel() ?: '';
             // Show (combined child) itemSet count if hierarchy_show_count checked in config
             $itemSetCount = $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings);
 
@@ -87,7 +87,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
                 } else {
                     echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()]));
                 }
-            } else {
+            } else if (!empty($groupingLabel)) {
                 echo '<li>' . $groupingLabel;
             }
         }
