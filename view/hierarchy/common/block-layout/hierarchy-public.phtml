@@ -34,7 +34,9 @@
                         $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
                         // If no grouping label, show itemSet title as grouping heading
                         $groupingName = $grouping['data']['label'] ?: $itemSet->displayTitle(null, $valueLang);
-                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
+                        if (!empty($groupingName)) {
+                            echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
+                        }
                     } catch (NotFoundException $e) {
                         // Print groupings without assigned itemSet
                         if (!empty($groupingName)) {

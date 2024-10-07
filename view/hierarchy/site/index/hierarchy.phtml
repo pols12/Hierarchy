@@ -80,7 +80,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
                 } else {
                     echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
                 }
-            } else if ($itemSetCount != null) {
+            } else if (!empty($groupingLabel) && $itemSetCount != null) {
                 // Bold current page grouping
                 if ($grouping->id() == $hierarchyGrouping->id()) {
                     echo '<li><b>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>';
@@ -96,10 +96,12 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             // Show itemSet count if hierarchy_show_count checked in config
             $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings) : '';
             // Bold current page grouping
-            if ($grouping->id() == $hierarchyGrouping->id()) {
-                echo '<li><b>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;
-            } else {
-                echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+            if (!empty($groupingLabel)) {
+                if ($grouping->id() == $hierarchyGrouping->id()) {
+                    echo '<li><b>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . '</b>' . $itemSetCount;
+                } else {
+                    echo '<li>' . $this->hyperlink($groupingLabel, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $grouping->id()])) . $itemSetCount;
+                }
             }
         }
 
