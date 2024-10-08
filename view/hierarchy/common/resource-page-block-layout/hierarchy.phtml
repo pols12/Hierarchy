@@ -17,11 +17,9 @@ if (!$itemSets) {
     return;
 }
 
-// Get order for printing hierarchies by comparing resource/resource's itemSets to position on Hierarchy page
-$itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
-$itemSets = !empty($item) ? array_replace(array_flip($itemSetOrder), $item->itemSets()) : $itemSets;
-
+// Get order for printing hierarchies from Site Hierarchies page setting
 $siteHierarchiesArray = $this->siteSetting('site_hierarchies');
+
 $siteGroupings = array();
 $groupings = array();
 foreach ($itemSets as $itemSet) {
@@ -30,8 +28,8 @@ foreach ($itemSets as $itemSet) {
     }
     $groupings = $api->search('hierarchy_grouping', ['item_set' => $itemSet->id(), 'sort_by' => 'position'])->getContent();
     // Only show groupings/hierarchies assigned by Hierarchy option in site's context menu
-    foreach ($groupings as $grouping) {
-        foreach ($siteHierarchiesArray as $siteHierarchy) {
+    foreach ($siteHierarchiesArray as $siteHierarchy) {
+        foreach ($groupings as $grouping) {
             if ($grouping->getHierarchy()->getId() == $siteHierarchy['id']) {
                 $siteGroupings[][] = $grouping;
             }
