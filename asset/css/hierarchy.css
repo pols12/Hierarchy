@@ -45,9 +45,13 @@
     display: flex;
 }
 
-.hierarchy-filters {
+.hierarchy-metadata {
     width: 30%;
     padding-right: 30px;
+}
+
+.hierarchy-item-sets {
+    padding-top: 10px;
 }
 
 .hierarchy-items {
@@ -61,7 +65,7 @@
         display: block;
     }
 
-    .hierarchy-filters,
+    .hierarchy-metadata,
     .hierarchy-items {
         width: 100%;
         padding-left: 0;

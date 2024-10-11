@@ -7,6 +7,7 @@ $lang = $this->lang();
 $valueLang = $filterLocale ? [$lang, ''] : null;
 $query = $this->params()->fromQuery();
 $hierarchyHeadingLevel = "h2";
+$hierarchyItemSets = [];
 
 $this->headLink()->appendStylesheet($this->assetUrl('css/hierarchy.css', 'Hierarchy'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/resource-page-blocks.css', 'Omeka'));
@@ -22,7 +23,7 @@ if ($hierarchyGrouping->getLabel()) {
 <div class="hierarchy-row">
 <?php 
 // Iterate through groupings to create nested list in metadata sidebar
-$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, $hierarchyGrouping, $valueLang, $hierarchyHeadingLevel) {
+$iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$printedGroupings, &$currentHierarchy, &$childCount, &$hierarchyItemSets, $hierarchyGrouping, $valueLang, $hierarchyHeadingLevel) {
     foreach ($groupings as $key => $grouping) {
         // Continue if grouping has already been printed
         if (isset($printedGroupings) && in_array($grouping, $printedGroupings)) {
@@ -61,6 +62,7 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
                 // If no grouping label, show itemSet title as grouping heading
                 $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
                 $itemSet = $this->api()->read('item_sets', $grouping->getItemSet()->id())->getContent();
+                $hierarchyItemSets[] = $itemSet;
             } catch (\Exception $e) {
                 // Print groupings with private itemSet
                 $itemSet = '';
@@ -135,13 +137,30 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             echo '</li>';
         }
     }
+    return array_unique($hierarchyItemSets, SORT_REGULAR);
 };
 
 $groupings = $this->api()->search('hierarchy_grouping', ['id' => $hierarchyGrouping->id(), 'sort_by' => 'position'])->getContent();
 if ($groupings) {
-    echo '<div class="hierarchy-filters">';
-    $iterate($groupings, $itemSet);
+    echo '<div class="hierarchy-metadata"><div class="hierarchy-filters">';
+    $hierarchyItemSets = $iterate($groupings, $itemSet);
     echo '</div>';
+    echo '<div class="hierarchy-item-sets">';
+    if (count($hierarchyItemSets) == 1) {
+        $itemSet = $hierarchyItemSets[0];
+        echo 'Contains resources from: ';
+        echo $itemSet->link($itemSet->displayTitle());
+    } else if (count($hierarchyItemSets) > 1) {
+        $finalItemSet = end($hierarchyItemSets);
+        echo 'Contains resources from: ';
+        foreach ($hierarchyItemSets as $itemSet) {
+            echo $itemSet->link($itemSet->displayTitle());
+            if ($itemSet != $finalItemSet) {
+                echo ', ';
+            }
+        }
+    }
+    echo '</div></div>';
 }
 ?>
 
