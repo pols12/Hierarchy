@@ -24,12 +24,17 @@ class IndexController extends AbstractActionController
             $itemSetIDArray[] = $itemSet ? $itemSet->id() : 0;
         }
 
-        $query = $this->params()->fromQuery();
-        $query['item_set_id'] = $itemSetIDArray;
-        $response = $this->api()->search('items', $query);
-        $page = $this->params()->fromQuery('page', 1);
-        $this->paginator($response->getTotalResults(), $page);
-        $items = $response->getContent();
+        if (!empty($itemSetIDArray)) {
+            $query = $this->params()->fromQuery();
+            $query['item_set_id'] = $itemSetIDArray;
+            $response = $this->api()->search('items', $query);
+            $page = $this->params()->fromQuery('page', 1);
+            $this->paginator($response->getTotalResults(), $page);
+            $items = $response->getContent();
+        } else {
+            $items = [];
+        }
+
         $siteSlug = $this->params('site-slug');
         
         $view->setVariable('hierarchyGrouping', $grouping);
