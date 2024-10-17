@@ -192,22 +192,22 @@ class Module extends AbstractModule
     // Add relevant hierarchy nested lists to item admin display sidebar
     public function addItemAdminHierarchies(Event $event)
     {
-        $this->view = $event->getTarget();
+        $view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        if ($this->view->item->itemSets()) {
+        if ($view->item->itemSets()) {
             echo '<div class="meta-group">';
-            echo '<h4>' . $this->view->translate('Hierarchies') . '</h4>';
+            echo '<h4>' . $view->translate('Hierarchies') . '</h4>';
 
             // Get order for printing item's sets from position on hierarchy page
             $itemSetOrder = array_filter($api->search('hierarchy_grouping', ['sort_by' => 'position'], ['returnScalar' => 'item_set'])->getContent());
-            $itemSets = array_replace(array_flip($itemSetOrder), $this->view->item->itemSets());
+            $itemSets = array_replace(array_flip($itemSetOrder), $view->item->itemSets());
 
             foreach ($itemSets as $currentItemSet) {
                 if (is_numeric($currentItemSet)) {
                     continue;
                 }
                 $groupings = $api->search('hierarchy_grouping', ['item_set' => $currentItemSet->id(), 'sort_by' => 'position'])->getContent();
-                $this->view->hierarchyHelper()->buildNestedList($groupings, $currentItemSet, $this->view->item);
+                $view->hierarchyHelper()->buildNestedList($groupings, $currentItemSet, $view->item);
             }
             echo '</div>';
         }
@@ -216,13 +216,13 @@ class Module extends AbstractModule
     // Add relevant hierarchy nested lists to item set admin display sidebar
     public function addItemSetAdminHierarchies(Event $event)
     {
-        $this->view = $event->getTarget();
+        $view = $event->getTarget();
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        $groupings = $api->search('hierarchy_grouping', ['item_set' => $this->view->resource->id(), 'sort_by' => 'position'])->getContent();
+        $groupings = $api->search('hierarchy_grouping', ['item_set' => $view->resource->id(), 'sort_by' => 'position'])->getContent();
 
         echo '<div class="meta-group">';
-        echo '<h4>' . $this->view->translate('Hierarchies') . '</h4>';
-        $this->view->hierarchyHelper()->buildNestedList($groupings, $this->view->resource, $this->view->item);
+        echo '<h4>' . $view->translate('Hierarchies') . '</h4>';
+        $view->hierarchyHelper()->buildNestedList($groupings, $view->resource, $view->item);
         echo '</div>';
     }
 }
