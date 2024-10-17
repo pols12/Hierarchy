@@ -60,6 +60,10 @@
     padding-left: 30px;
 }
 
+.hierarchies ul.hierarchy-list {
+    margin: 0 0 1rem .5rem;
+}
+
 @media screen and (max-width: 799px) {
     .hierarchy-module .hierarchy-row { 
         display: block;
@@ -85,7 +89,6 @@ span.hierarchy-label {
 }
 
 ul.hierarchy-list {
-    margin: 0 0 2rem .5rem;
     width: 100%;
 }
 
