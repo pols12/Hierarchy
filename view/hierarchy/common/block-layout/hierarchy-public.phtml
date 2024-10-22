@@ -13,7 +13,7 @@
     <ul class="hierarchy-list">
         <?php $iterate = function ($groupings) use (&$iterate, $allGroupings, $valueLang) {
             foreach ($groupings as $grouping) {
-                $groupingName = $grouping['data']['label'] ?: '';
+                $groupingName = $grouping['data']['label'] ?: $this->translate('[Untitled]');
                 $groupingSet = $grouping['data']['itemSet'];
                 $groupingID = $grouping['data']['groupingID'];
                 if (empty($groupingSet)) {
@@ -21,7 +21,7 @@
                     $groupingObject = $this->api()->read('hierarchy_grouping', $groupingID)->getContent();
                     $itemSetCount = $this->siteSetting('hierarchy_show_count') ? $this->hierarchyHelper()->itemSetCount($groupingObject, $allGroupings) : '';
                     if ($itemSetCount != null) {
-                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount . '</li>';
+                        echo '<li>' . $this->hyperlink($groupingName, $this->url('site/hierarchy', ['site-slug' => $this->currentSite()->slug(), 'grouping-id' => $groupingID])) . $itemSetCount;
                     } else if (!empty($groupingName)) {
                         // Print groupings without assigned itemSet
                         echo '<li>' . $groupingName;
