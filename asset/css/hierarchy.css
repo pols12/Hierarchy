@@ -90,6 +90,7 @@ span.hierarchy-label {
 
 ul.hierarchy-list {
     width: 100%;
+    list-style: none;
 }
 
 .hierarchy-filters ul,

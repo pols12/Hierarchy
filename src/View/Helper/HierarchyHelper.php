@@ -256,10 +256,10 @@ class HierarchyHelper extends AbstractHelper
                         $groupingLabel = $grouping->getLabel() ?: $grouping->getItemSet()->displayTitle(null, $valueLang);
                     } catch (\Exception $e) {
                         // itemSet not found or private
-                        $groupingLabel = $grouping->getLabel() ?: '';
+                        $groupingLabel = $grouping->getLabel() ?: $view->translate('Private');
                     }
                 } else {
-                    $groupingLabel = $grouping->getLabel() ?: '';
+                    $groupingLabel = $grouping->getLabel() ?: $view->translate('[Untitled]');
                 }
 
                 try {
