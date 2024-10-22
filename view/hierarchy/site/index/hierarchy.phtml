@@ -66,12 +66,12 @@ $iterate = function ($groupings, $itemSet) use (&$iterate, &$allGroupings, &$pri
             } catch (\Exception $e) {
                 // Print groupings with private itemSet
                 $itemSet = '';
-                $groupingLabel = $grouping->getLabel() ?: '';
+                $groupingLabel = $grouping->getLabel() ?: $this->translate('Private');
             }
         } else {
             // Print groupings without assigned itemSet
             $itemSet = null;
-            $groupingLabel = $grouping->getLabel() ?: '';
+            $groupingLabel = $grouping->getLabel() ?: $this->translate('[Untitled]');
             // Show (combined child) itemSet count if hierarchy_show_count checked in config
             $itemSetCount = $this->hierarchyHelper()->itemSetCount($grouping, $allGroupings);
 
