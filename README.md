@@ -2,11 +2,11 @@
 
 Create hierarchies of resources for organization and display. Each hierarchy can contain multiple nested groupings, and each grouping may optionally contain objects from a selected item set.
 
-See the Omeka S user manual for user documentation.
+This module adds a place to create and edit hierarchies, site-specific settings for display, a resource page block (for items and item sets), and a site page block to display hierarchies. Hierarchies and their groupings have custom browse pages that show all items contained within that grouping and, optionally, within its children groupings. 
 
-## Installation
+Some Omeka S themes may need to be updated to work with this modules. 
 
-See general end user documentation for [Installing a module](http://omeka.org/s/docs/user-manual/modules/#installing-modules)
+For more information, see the Omeka S user manual: https://omeka.org/s/docs/user-manual/modules/hierarchy
 
 # Copyright
 
