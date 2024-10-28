@@ -6,7 +6,7 @@ This module adds a place to create and edit hierarchies, site-specific settings 
 
 Some Omeka S themes may need to be updated to work with this modules. 
 
-For more information, see the Omeka S user manual: https://omeka.org/s/docs/user-manual/modules/hierarchy
+For more information, see the Omeka S user manual: [https://omeka.org/s/docs/user-manual/modules/hierarchy](https://omeka.org/s/docs/user-manual/modules/hierarchy)
 
 # Copyright
 
