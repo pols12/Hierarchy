@@ -187,7 +187,7 @@ if ($groupings) {
             <li class="item resource">
                 <?php
                 $linkContent = sprintf('%s<span class="resource-name">%s</span>',
-                    $thumbnail($item, 'medium'),
+                    $thumbnail($item, 'square'),
                     $escape($heading));
                 echo $item->linkRaw($linkContent, null, ['class' => 'resource-link']);
                 ?>
