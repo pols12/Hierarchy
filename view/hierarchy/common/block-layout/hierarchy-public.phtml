@@ -1,4 +1,7 @@
-<?php $this->headLink()->appendStylesheet($this->assetUrl('css/hierarchy.css', 'Hierarchy')); ?>
+<?php
+use Omeka\Api\Exception\NotFoundException;
+$this->headLink()->appendStylesheet($this->assetUrl('css/hierarchy.css', 'Hierarchy'));
+?>
 <div class="hierarchy-filters">
     <?php
     $filterLocale = (bool) $this->siteSetting('filter_locale_values');
