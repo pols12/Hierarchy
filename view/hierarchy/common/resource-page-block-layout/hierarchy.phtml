@@ -21,6 +21,7 @@ if (!$itemSets) {
 $siteHierarchiesArray = $this->siteSetting('site_hierarchies');
 
 $siteGroupings = array();
+$printedHierarchies = array();
 $groupings = array();
 foreach ($itemSets as $itemSet) {
     if (is_numeric($itemSet)) {
@@ -31,7 +32,11 @@ foreach ($itemSets as $itemSet) {
     foreach ($siteHierarchiesArray as $siteHierarchy) {
         foreach ($groupings as $grouping) {
             if ($grouping->getHierarchy()->getId() == $siteHierarchy['id']) {
-                $siteGroupings[][] = $grouping;
+                if (!in_array($grouping->getHierarchy()->getId(), $printedHierarchies)) {
+                    // Only print hierarchies with multiple item set groupings once
+                    $siteGroupings[][] = $grouping;
+                    $printedHierarchies[] = $grouping->getHierarchy()->getId();
+                }
             }
         }
     }
