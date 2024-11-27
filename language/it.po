@@ -2,109 +2,120 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+# Translators:
+# Giorgio Comai <g@giorgiocomai.eu>, 2024
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 16:04-0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2024-10-28 21:07+0000\n"
+"Last-Translator: Giorgio Comai <g@giorgiocomai.eu>, 2024\n"
+"Language-Team: Italian (https://app.transifex.com/omeka/teams/14184/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: Module.php:200 Module.php:225
 #: view/hierarchy/common/resource-page-block-layout/hierarchy.phtml:53
 #: view/hierarchy/site-admin/index/index.phtml:40
 msgid "Hierarchies"
-msgstr ""
+msgstr "Gerarchie"
 
 #: src/Site/BlockLayout/Hierarchy.php:45
 msgid "(No site hierarchies assigned)"
-msgstr ""
+msgstr "(nessuna gerarchia sito assegnata)"
 
 #: src/Site/BlockLayout/Hierarchy.php:54 view/hierarchy/index/index.phtml:11
 msgid "Hierarchy"
-msgstr ""
+msgstr "Gerarchia"
 
 #: view/hierarchy/common/hierarchy.phtml:10
 msgid "Hierarchy to be removed"
-msgstr ""
+msgstr "Gerarchia da eliminare"
 
 #: view/hierarchy/common/hierarchy.phtml:13
 #: view/hierarchy/site-admin/index/index.phtml:12
 msgid "Remove hierarchy"
-msgstr ""
+msgstr "Elimina gerarchia"
 
 #: view/hierarchy/common/hierarchy.phtml:14
 msgid "Restore hierarchy"
-msgstr ""
+msgstr "Ripristina gerarchia"
 
 #: view/hierarchy/common/hierarchy.phtml:20
 msgid "Add grouping"
-msgstr ""
+msgstr "Aggiungi raggruppamento"
 
 #: view/hierarchy/index/grouping-form.phtml:10
 msgid "Select Item Set..."
-msgstr ""
+msgstr "Seleziona collezione"
 
 #: view/hierarchy/index/index.phtml:17
 msgid "Add Hierarchy"
-msgstr ""
+msgstr "Aggiungi gerarchia"
 
 #: view/hierarchy/site-admin/index/index.phtml:19
 msgid "Site Hierarchies"
-msgstr ""
+msgstr "Gerarchie del sito"
 
 #: view/hierarchy/site-admin/index/index.phtml:31
 msgid "No hierarchies are assigned to this site."
-msgstr ""
+msgstr "Nessuna gerarchia assegnata a questo sito"
 
 #: view/hierarchy/site-admin/index/index.phtml:37
 msgid "Click on a hierarchy to add it to the edit panel."
-msgstr ""
+msgstr "Clicca su una gerarchia per aggiungerla al pannello di modifica"
 
 #: view/hierarchy/site-admin/index/index.phtml:38
 msgid "Filter hierarchies"
-msgstr ""
+msgstr "Filtra gerarchie"
 
 #: Module.php:129
 msgid "Show hierarchy label"
-msgstr ""
+msgstr "Mostra etichetta della gerarchia"
 
 #: Module.php:130
 msgid ""
 "If checked, assigned label will display as hierarchy header on public pages."
 msgstr ""
+"Se selezionato, l'etichetta assegnata verrà mostrata come testata della "
+"gerarchia nelle pagine pubbliche"
 
 #: Module.php:143
 msgid "Show hierarchy resource counts"
-msgstr ""
+msgstr "Mostra il conteggio delle risorse della gerarchia"
 
 #: Module.php:144
 msgid ""
 "If checked, hierarchy groupings will show # of resources within currently "
 "assigned itemSet."
 msgstr ""
+"Se selezionato, i raggruppamenti di gerarchia mostreranno il numero di "
+"risorse all'interno della collezione attualmente assegnata."
 
 #: Module.php:157
 msgid "Combine hierarchy resources"
-msgstr ""
+msgstr "Combina risorse della gerarchia"
 
 #: Module.php:158
 msgid ""
 "If checked, groupings will display resources of all child groupings in "
 "resource counts and on hierarchy grouping browse pages."
 msgstr ""
+"Se selezonato, i raggruppamenti mostreranno le risorse di tutti i "
+"raggruppamenti figli nel conteggio delle risorse e nelle pagine per "
+"sfogliare il raggruppamento della gerarchia."
 
 #: src/Controller/IndexController.php:65
 msgid "Hierarchy successfully updated"
-msgstr ""
+msgstr "Gerarchia aggiornata con successo"
 
 #: src/View/Helper/HierarchyHelper.php:50
 msgid "Hierarchy Label"
-msgstr ""
+msgstr "Etichetta della gerarchia"
